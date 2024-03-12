@@ -1,46 +1,62 @@
 #include"pixel.h"
 
-
 int main(){
+    
 
-    InitWindow(screenwidth,screenheight,"paint");
+    InitWindow(gui.screenwidth,gui.screenheight,"paint");
 
     Vector2 pos = {0,0};  
     bool curdown = false;
 
-    pixel* screen = (pixel*)malloc(screenwidth*screenheight*sizeof(pixel));
+    vector qsplines = GiveVector();
+    vector lines = GiveVector();
+    vector points = GiveVector();    
+
+    pixel* screen = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
     ClearScreen(screen);
+    AddGuiBase(screen);
+    
     SetTargetFPS(60);
-
-
-    int count = 0;
-
     while(!WindowShouldClose()){   
-        BeginDrawing();
-
-            //ClearBackground(RAYWHITE);
-            DrawScreen(screen);
-
-            pos = GetMousePosition();
-            if(curdown){
-                if(pos.x <1200 && pos.x > 400 && pos.y > 200 && pos.y < 650){
-                    screen[(int)(pos.y * screenwidth + pos.x)].color = (Color){0,0,0,255};
+        
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            curdown = true;
+        }
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
+            curdown = false;
+        }
+        pos = GetMousePosition();
+        if(curdown){
+            
+            if(pos.x < gui.CanvasBottomRight.x && pos.x > gui.CanvasTopLeft.x && pos.y > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
+                screen[(int)(pos.y * gui.screenwidth + pos.x)].color = (Color){0,0,0,255};
+                Vector_Add50e(&points,(Vector2){pos.x,pos.y});
+            }
+        }
+        if(!curdown){
+            if(points.len != 0){
+                int i  = 0;
+                for(;points.len-i>=3;i+=2){               
+                    Vector_Add50e(&qsplines,(points.arr)[i]);                    
+                    Vector_Add50e(&qsplines,(points.arr)[i+1]);                    
+                    Vector_Add50e(&qsplines,(points.arr)[i+2]);                    
                 }
-            } 
-            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                curdown = true;
+                
+                if(points.len - i == 2){
+                    Vector_Add50e(&lines,(points.arr)[i]);
+                    Vector_Add50e(&lines,(points.arr)[i+1]);
+                }
+           
+                Vector_Empty(&points);
             }
-            if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
-                curdown = false;
-            }
-            // count = 0;
-            // for(int i = 0;i<screenwidth*screenheight;i++){
-            //     if(screen[i].color.r == 0 && screen[i].color.g == 0 && screen[i].color.b == 0 ){
-            //         count+=1;
-            //     }        
-            // }
-            //printf("%d\n",count);
-
+        }
+        
+        BeginDrawing();
+        
+            DrawScreen(screen);
+            DrawQSplines(&qsplines);
+            DrawLines(&lines);
+        
         EndDrawing();
     }
     CloseWindow();
