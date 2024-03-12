@@ -1,5 +1,5 @@
-#include"pixel.h"
-
+#include"things.h"
+extern Gui gui;
 int main(){
     
 
@@ -21,6 +21,7 @@ int main(){
         
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             curdown = true;
+            Button_Ifpressed(gui.buttons[0],GetMousePosition(),screen,NULL,NULL);
         }
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
             curdown = false;
@@ -32,6 +33,15 @@ int main(){
                 screen[(int)(pos.y * gui.screenwidth + pos.x)].color = (Color){0,0,0,255};
                 Vector_Add50e(&points,(Vector2){pos.x,pos.y});
             }
+            //printf("%d\n",points.len);
+            if(points.len==3){
+                Vector_Add50e(&qsplines,(points.arr)[0]);                    
+                Vector_Add50e(&qsplines,(points.arr)[1]);                    
+                Vector_Add50e(&qsplines,(points.arr)[2]);
+                points.arr[0] = points.arr[2];
+                Vector_pop(&points);
+                Vector_pop(&points);
+            }
         }
         if(!curdown){
             if(points.len != 0){
@@ -41,12 +51,10 @@ int main(){
                     Vector_Add50e(&qsplines,(points.arr)[i+1]);                    
                     Vector_Add50e(&qsplines,(points.arr)[i+2]);                    
                 }
-                
                 if(points.len - i == 2){
                     Vector_Add50e(&lines,(points.arr)[i]);
                     Vector_Add50e(&lines,(points.arr)[i+1]);
                 }
-           
                 Vector_Empty(&points);
             }
         }
