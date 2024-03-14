@@ -1,0 +1,7 @@
+*.exe
+raylib.h
+rlgl.h
+raymath.h
+test.c
+libraylib.a
+.vscode/

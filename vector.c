@@ -21,6 +21,7 @@ void Vector_Grow50(vector* vec,int index){
     vec->arr = temp;
 }
 
+
 void Vector_Add50(vector* vec,Vector2 point,int index){
     if(index + 1>vec->cap){
         Vector_Grow50(vec,index);
