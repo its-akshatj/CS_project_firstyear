@@ -8,20 +8,22 @@ int main(){
     Vector2 pos = {0,0};  
     bool curdown = false;
 
+    Button_LoadTextures();
+
     vector qsplines = GiveVector();
     vector lines = GiveVector();
     vector points = GiveVector();    
 
     pixel* screen = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
-    ClearScreen(screen);
-    AddGuiBase(screen);
+    ClearScreen(screen,&qsplines,&lines,&points);
+    
     
     SetTargetFPS(60);
     while(!WindowShouldClose()){   
         
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             curdown = true;
-            Button_Ifpressed(gui.buttons[0],GetMousePosition(),screen,NULL,NULL);
+            Button_Ifpressed(gui.buttons[0],GetMousePosition(),screen,&qsplines,&lines,&points);
         }
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
             curdown = false;
@@ -60,8 +62,9 @@ int main(){
         }
         
         BeginDrawing();
-        
+            
             DrawScreen(screen);
+            AddGuiBase(screen);
             DrawQSplines(&qsplines);
             DrawLines(&lines);
         

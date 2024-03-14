@@ -1,0 +1,5 @@
+gcc main.c -I. -lraylib -lopengl32 -lgdi32 -lwinmm  -L.
+
+
+
+//gui = {1280,720,(Vector2){400,100},(Vector2){1200,650},4};

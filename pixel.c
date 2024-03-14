@@ -11,10 +11,26 @@ void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color c
     }
 }
 
-void ClearScreen(pixel* screen){
+void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points){
     for(int i = 0;i<gui.screenwidth*gui.screenheight;i++){
         screen[i] = (pixel){WHITE};
     }
+    Vector_Empty(qsplines);
+    Vector_Empty(lines);
+    Vector_Empty(points);
+    
+}
+void ClearCanvas(pixel* screen,vector* qsplines,vector* lines,vector* points){
+    for(int i = gui.CanvasTopLeft.y;i <= gui.CanvasBottomRight.y;i++){
+        for(int j = gui.CanvasTopLeft.x; j < gui.CanvasBottomRight.x;j++){
+            screen[i*gui.screenwidth + j] = (pixel){WHITE};
+        }
+        
+    }
+    Vector_Empty(qsplines);
+    Vector_Empty(lines);
+    Vector_Empty(points);
+    
 }
 
 void DrawScreen(pixel* screen){
@@ -28,8 +44,8 @@ void AddGuiBase(pixel* screen){
     MyDrawRectangle(screen,(Vector2){gui.CanvasTopLeft.x-gui.CanvasBorderThickness,gui.CanvasBottomRight.y},(Vector2){gui.CanvasBottomRight.x+gui.CanvasBorderThickness,gui.CanvasBottomRight.y+gui.CanvasBorderThickness},RED);
     MyDrawRectangle(screen,(Vector2){gui.CanvasTopLeft.x-gui.CanvasBorderThickness,gui.CanvasTopLeft.y},(Vector2){gui.CanvasTopLeft.x,gui.CanvasBottomRight.y},RED);
     MyDrawRectangle(screen,(Vector2){gui.CanvasBottomRight.x,gui.CanvasTopLeft.y},(Vector2){gui.CanvasBottomRight.x+gui.CanvasBorderThickness,gui.CanvasBottomRight.y},RED);
-    for(int i = 0;i<gui.num_nuttons;i++){
-        MyDrawRectangle(screen,gui.buttons[i].top_left,gui.buttons[i].bottom_right,gui.buttons[i].color);
+    for(int i = 0;i<gui.num_buttons;i++){
+        DrawTextureV(gui.buttons[i].texture,gui.buttons[i].top_left,WHITE);
     }
 }
 
@@ -44,6 +60,7 @@ void DrawLines(vector* lines){
         DrawLineV((lines->arr)[i],(lines->arr)[i+1],BLACK);
     }
 }
+
 
 
 
