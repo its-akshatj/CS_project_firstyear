@@ -1,5 +1,7 @@
 #include"things.h"
 extern Gui gui;
+extern Pen pen;
+
 int main(){
     
 
@@ -16,6 +18,7 @@ int main(){
 
     pixel* screen = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
     ClearScreen(screen,&qsplines,&lines,&points);
+    AddGuiBase(screen);
     
     
     SetTargetFPS(60);
@@ -61,12 +64,15 @@ int main(){
             }
         }
         
+        AddLines(screen,&lines);
+        AddQSplines(screen,&qsplines);
         BeginDrawing();
             
+            
             DrawScreen(screen);
-            AddGuiBase(screen);
-            DrawQSplines(&qsplines);
-            DrawLines(&lines);
+            
+            //DrawQSplines(&qsplines);
+            //DrawLines(&lines);
         
         EndDrawing();
     }

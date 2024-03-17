@@ -6,9 +6,9 @@
 #include<stdlib.h>
 
 typedef struct{
-    Texture2D img;
-    Vector2 pos;
-}cursor;
+    int thickness;
+    Color color;
+}Pen;
 
 typedef struct {
     Color color;
@@ -40,14 +40,20 @@ typedef struct{
     int len;
     int cap;
 }vector;
-
+// pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
 void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points);
 void DrawScreen(pixel* screen);
 void AddGuiBase(pixel* screen);
 void DrawQSplines(vector* qsplines);
 void DrawLines(vector* lines);
 void ClearCanvas(pixel* screen,vector* qsplines,vector* lines,vector* points);
+void AddQSplines(pixel* screen,vector* qsplines);
+void AddLines(pixel* screen,vector* lines);
+void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color);
+
+//vector.c
 
 vector GiveVector();
 void Vector_Grow50(vector* vec,int index);
@@ -58,6 +64,8 @@ void Vector_Add(vector* vec,Vector2 point,int index);
 Vector2 Vector_pop(vector* vec);
 void Vector_Empty(vector* vec);
 
+//buttons.c
+Vector2 Vector2Sum(Vector2 a,Vector2 b);
 void Button_LoadTextures();
 void Button_Ifpressed(button but,Vector2 cur_pos,void* a,void* b,void* c,void* d);
 void ScreenClearButton(void* a,void* b,void* c,void* d);
