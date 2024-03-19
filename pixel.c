@@ -11,7 +11,7 @@ void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color c
 }
 
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color){
-    if(pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
+    if(pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
         screen[(int)(gui.screenwidth)*(int)pos.y + (int)(pos.x)] = (pixel){color};
     }
 }
@@ -26,8 +26,8 @@ void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points){
     
 }
 void ClearCanvas(pixel* screen,vector* qsplines,vector* lines,vector* points){
-    for(int i = gui.CanvasTopLeft.y;i <= gui.CanvasBottomRight.y;i++){
-        for(int j = gui.CanvasTopLeft.x; j < gui.CanvasBottomRight.x;j++){
+    for(int i = gui.CanvasTopLeft.y+1;i < gui.CanvasBottomRight.y;i++){
+        for(int j = gui.CanvasTopLeft.x+1; j < gui.CanvasBottomRight.x;j++){
             screen[i*gui.screenwidth + j] = (pixel){WHITE};
         }
         
@@ -44,6 +44,9 @@ void DrawScreen(pixel* screen){
     }
     for(int i = 0;i<gui.num_buttons;i++){
         DrawTextureV(gui.buttons[i].texture,gui.buttons[i].top_left,WHITE);
+    }
+    for(int i = 0;i<gui.num_sliders;i++){
+        DrawSlider(gui.sliders[i]);
     }
 }
 
@@ -68,8 +71,8 @@ void DrawLines(vector* lines){
 
 void AddQSplines(pixel* screen,vector* qsplines){
     for(int i = 0;i<(qsplines->len);i+=3){
-        for(int k = 0;k<200;k++){
-            Vector2 p = GetSplinePointBezierQuad((qsplines->arr)[i],(qsplines->arr)[i+1],(qsplines->arr)[i+2],(float)k/200.0); //k is getting promoted
+        for(int k = 0;k<100;k++){
+            Vector2 p = GetSplinePointBezierQuad((qsplines->arr)[i],(qsplines->arr)[i+1],(qsplines->arr)[i+2],(float)k/100.0); //k is getting promoted
             //Vector2 p = GetSplinePointBezierQuad((Vector2){200,200},(Vector2){200,300},(Vector2){400,400},(float)k/100);
             MyDrawCircle(screen,p,pen.thickness,pen.color);
         }
@@ -79,8 +82,8 @@ void AddQSplines(pixel* screen,vector* qsplines){
 
 void AddLines(pixel* screen,vector* lines){
     for(int i = 0;i<lines->len;i+=2){
-        for(int k = 0;k<200;k++){
-            Vector2 p = GetSplinePointLinear((lines->arr)[i],(lines->arr)[i+1],k/200.0); //k is getting type promoted
+        for(int k = 0;k<100;k++){
+            Vector2 p = GetSplinePointLinear((lines->arr)[i],(lines->arr)[i+1],k/100.0); //k is getting type promoted
             MyDrawCircle(screen,p,pen.thickness,pen.color);
         }
         Vector_Empty(lines);

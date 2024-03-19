@@ -4,6 +4,7 @@
 #include"raylib.h"
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 typedef struct{
     int thickness;
@@ -24,15 +25,26 @@ typedef struct
 }button;
 
 typedef struct{
+    Vector2 pos;
+    float slide;
+    Vector2 bar_dim; // width then height
+    Color color;
+    Vector2 rect_dim;
+}slider;
+
+typedef struct{
     int screenwidth;
     int screenheight;
 
-    Vector2 CanvasTopLeft;
+    Vector2 CanvasTopLeft;  // both of these are outside the canvas
     Vector2 CanvasBottomRight;
     int CanvasBorderThickness;
 
     button* buttons;
     int num_buttons;
+
+    slider* sliders;
+    int num_sliders;
 }Gui;
 
 typedef struct{
@@ -40,6 +52,9 @@ typedef struct{
     int len;
     int cap;
 }vector;
+
+
+
 // pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
@@ -69,5 +84,7 @@ Vector2 Vector2Sum(Vector2 a,Vector2 b);
 void Button_LoadTextures();
 void Button_Ifpressed(button but,Vector2 cur_pos,void* a,void* b,void* c,void* d);
 void ScreenClearButton(void* a,void* b,void* c,void* d);
+void SaveAsPpm6(void* a,void* b,void* c,void* d);
+void DrawSlider(slider s);
 
 #endif

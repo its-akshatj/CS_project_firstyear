@@ -30,6 +30,32 @@ void ScreenClearButton(void* a,void* b,void* c,void* d){
     ClearCanvas(screen,qsplines,lines,points);
 }
 
+void SaveAsPpm6(void* a,void* b,void* c,void* d){
+    pixel* screen = (pixel*)a;
+    char* filename = (char*)b;
+
+    FILE *f = fopen(filename,"w");
+    fprintf(f,"P6 %d %d 255\n",(int)gui.CanvasBottomRight.x-(int)gui.CanvasTopLeft.x-1,(int)gui.CanvasBottomRight.y-(int)gui.CanvasTopLeft.y -1);
+    fclose(f);
+    FILE *f1 = fopen(filename,"ab");
+    for(int i = gui.CanvasTopLeft.y+1;i < gui.CanvasBottomRight.y;i++){
+        for(int j = gui.CanvasTopLeft.x+1; j < gui.CanvasBottomRight.x;j++){
+            char pixel[3] ={screen[i*gui.screenwidth + j].color.r,screen[i*gui.screenwidth + j].color.g,screen[i*gui.screenwidth + j].color.b}; 
+            fwrite(pixel,1,3,f1);
+        }
+    }
+    fclose(f1);
+}
+
+void DrawSlider(slider s){
+    DrawRectangle(s.pos.x + s.slide * s.bar_dim.x - s.rect_dim.x/2,s.pos.y - (s.rect_dim.y - s.bar_dim.y)/2,s.rect_dim.x,s.rect_dim.y,BLACK);
+    DrawRectangleGradientH(s.pos.x,s.pos.y,s.bar_dim.x,s.bar_dim.y,BLACK,s.color);
+    // DrawRectangle(s.pos.x+s.slide*s.bar_dim.x-10,s.pos.y-20,20,20,BLACK);
+    // DrawRectangle(s.pos.x+s.slide*s.bar_dim.x-10,s.pos.y+s.bar_dim.y,20,20,BLACK);
+}
+
+
+
 
 
 
