@@ -1,4 +1,4 @@
-*.exe
+test.exe
 raylib.h
 rlgl.h
 raymath.h
