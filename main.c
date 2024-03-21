@@ -10,6 +10,7 @@ int main(){
     Vector2 pos = {0,0};  
     bool curdown = false;
     int moveslider = 0;
+    int uptextbox = 0;
 
     Button_LoadTextures();
 
@@ -25,11 +26,24 @@ int main(){
     SetTargetFPS(60);
     while(!WindowShouldClose()){   
         pos = GetMousePosition();
+
+        // text boxes
+        for(int i = 0;i<gui.num_textboxes;i++){
+            textbox t = gui.textboxes[i];
+            if(CheckCollisionPointRec(pos,(Rectangle){t.top_left.x,t.top_left.y,t.dim.x,t.dim.y})){
+                uptextbox = i + 1;
+            }
+        }
         
+        //on click
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             curdown = true;
+
+            //buttons
             Button_Ifpressed(gui.buttons[0],pos,screen,&qsplines,&lines,&points);
             Button_Ifpressed(gui.buttons[1],pos,screen,"test.ppm",NULL,NULL);
+
+            //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];
                 if(CheckCollisionPointRec(pos,(Rectangle){s.pos.x + s.slide * s.bar_dim.x - s.rect_dim.x/2,s.pos.y - (s.rect_dim.y - s.bar_dim.y)/2,s.rect_dim.x,s.rect_dim.y})){
@@ -40,8 +54,6 @@ int main(){
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
             curdown = false;
         }
-
-        
 
         if(curdown){
 
@@ -73,6 +85,7 @@ int main(){
             }
         }
         if(!curdown){
+
             if(points.len != 0){
                 int i  = 0;
                 for(;points.len-i>=3;i+=2){               
@@ -85,6 +98,27 @@ int main(){
                     Vector_Add50e(&lines,(points.arr)[i+1]);
                 }
                 Vector_Empty(&points);
+            }
+        }
+
+        if(uptextbox){
+            if(uptextbox == 1){
+                int key = GetKeyPressed();
+                    if(key == KEY_BACKSPACE && gui.textboxes[0].len != 0 ){
+                        gui.textboxes[0].text[gui.textboxes[0].len-1] = '\0';
+                        gui.textboxes[0].len = gui.textboxes[0].len - 1;
+                    }
+                    if(key>= 48 && key<=57 && gui.textboxes[0].len != 3){
+                        gui.textboxes[0].text[gui.textboxes[0].len] = (char)key;
+                        gui.textboxes[0].len = gui.textboxes[0].len + 1;
+                    }
+                    if(atoi(gui.textboxes[0].text)>150){
+                        gui.textboxes[0].text[0] = '1';
+                        gui.textboxes[0].text[1] = '5';
+                        gui.textboxes[0].text[2] = '0';
+                    }
+                    pen.thickness = atoi(gui.textboxes[0].text);
+                    uptextbox = 0;
             }
         }
         

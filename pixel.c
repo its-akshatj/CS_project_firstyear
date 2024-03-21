@@ -38,6 +38,11 @@ void ClearCanvas(pixel* screen,vector* qsplines,vector* lines,vector* points){
     
 }
 
+void Draw_Textboxes(textbox t){
+    DrawRectangle(t.top_left.x,t.top_left.y,t.dim.x,t.dim.y,BLUE);
+    DrawText(t.text,t.top_left.x,t.top_left.y,t.dim.y,RED);
+}
+
 void DrawScreen(pixel* screen){
     for(int i = 0;i<gui.screenwidth*gui.screenheight;i++){
         DrawRectangle(i%gui.screenwidth,i/gui.screenwidth,1,1,(screen[i]).color);
@@ -47,6 +52,9 @@ void DrawScreen(pixel* screen){
     }
     for(int i = 0;i<gui.num_sliders;i++){
         DrawSlider(gui.sliders[i]);
+    }
+    for(int i = 0;i<gui.num_textboxes;i++){
+        Draw_Textboxes(gui.textboxes[i]);
     }
 }
 
@@ -101,7 +109,6 @@ void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color){
         }
     }
 }
-
 
 
 

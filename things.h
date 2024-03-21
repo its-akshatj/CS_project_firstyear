@@ -33,9 +33,17 @@ typedef struct{
 }slider;
 
 typedef struct{
+    char* text;
+    int len;
+    Vector2 top_left;
+    Vector2 dim;
+}textbox;
+
+typedef struct{
     int screenwidth;
     int screenheight;
 
+    Vector2 CanvasCenter;
     Vector2 CanvasTopLeft;  // both of these are outside the canvas
     Vector2 CanvasBottomRight;
     int CanvasBorderThickness;
@@ -45,6 +53,10 @@ typedef struct{
 
     slider* sliders;
     int num_sliders;
+
+    textbox* textboxes;
+    int num_textboxes;
+    
 }Gui;
 
 typedef struct{
@@ -52,6 +64,7 @@ typedef struct{
     int len;
     int cap;
 }vector;
+
 
 
 
@@ -69,7 +82,6 @@ void AddLines(pixel* screen,vector* lines);
 void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color);
 
 //vector.c
-
 vector GiveVector();
 void Vector_Grow50(vector* vec,int index);
 void Vector_Add50(vector* vec,Vector2 point,int index);
