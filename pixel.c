@@ -1,6 +1,7 @@
 #include"things.h"
 extern Gui gui;
 extern Pen pen;
+extern enum State state;
 
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color){
     if(pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
@@ -9,6 +10,16 @@ void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color){
 }
 
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
     for(int i = 0;i<=bottom_right.x-top_left.x;i++){
         for(int j = 0;j<=bottom_right.y-top_left.y;j++){
             screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
@@ -75,10 +86,6 @@ void DrawScreen(pixel* screen){
         }
         
     }
-
-    // for(int i = 0;i<gui.screenwidth*gui.screenheight;i++){
-    //     DrawRectangle(i%gui.screenwidth,i/gui.screenwidth,1,1,(screen[i]).color);
-    // }
     for(int i = 0;i<gui.num_buttons;i++){
         DrawTextureV(gui.buttons[i].texture,gui.buttons[i].top_left,WHITE);
     }

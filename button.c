@@ -1,6 +1,7 @@
 #include"things.h"
 extern Gui gui;
 extern Pen pen;
+extern enum State state;
 
 Vector2 Vector2Sum(Vector2 a,Vector2 b){
     return (Vector2){a.x+b.x,a.y+b.y};
@@ -13,10 +14,7 @@ void Button_LoadTextures(){
 }
 
 void Button_Ifpressed(button but,Vector2 cur_pos,void* a,void* b,void* c,void* d){
-    //printf("a\n");
-    //printf("%d%d%d%d\n",cur_pos.x <= but.bottom_right.x,cur_pos.x >= but.top_left.x,cur_pos.y<= but.bottom_right.y, cur_pos.y>=but.top_left.y);
-    if(cur_pos.x <= but.bottom_right.x && cur_pos.x >= but.top_left.x && cur_pos.y<= but.bottom_right.y && cur_pos.y>=but.top_left.y){
-        //printf("b\n");
+    if(CheckCollisionPointRec(cur_pos,(Rectangle){but.top_left.x,but.top_left.y,but.dim.x,but.dim.y})){
         but.func(a,b,c,d);
     }
 }
@@ -73,8 +71,8 @@ void DrawSlider(slider s){
 }
 
 void RectTool(void* a,void* b,void* c,void* d){
-
-    
+    pixel* screen = (pixel*)a;
+    state = rect;
 }
 
 

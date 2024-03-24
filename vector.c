@@ -1,5 +1,4 @@
 #include"things.h"
-extern Gui gui;
 
 vector GiveVector(){
     Vector2 *arr = (Vector2*)malloc(50*sizeof(Vector2));

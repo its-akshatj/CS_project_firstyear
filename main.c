@@ -1,12 +1,14 @@
 #include"things.h"
 extern Gui gui;
 extern Pen pen;
-
+extern enum State state;
 int main(){
     
 
     InitWindow(gui.screenwidth,gui.screenheight,"paint");
 
+    Vector2 pos1,pos2;
+    int stateflag = 0;
 
     Vector2 pos = {0,0};  
     bool curdown = false;
@@ -27,6 +29,17 @@ int main(){
     while(!WindowShouldClose()){   
         pos = GetMousePosition();
 
+        switch (state){
+        case rect:
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[4].top_left.x,gui.buttons[4].top_left.y,gui.buttons[4].dim.x,gui.buttons[4].dim.y})){
+            state = normal;
+            stateflag = 0;    
+        }
+        if(stateflag = 0 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
+        }
+        break;
+
+        case normal:
         // text boxes
         for(int i = 0;i<gui.num_textboxes;i++){
             textbox t = gui.textboxes[i];
@@ -43,6 +56,7 @@ int main(){
             Button_Ifpressed(gui.buttons[0],pos,screen,&qsplines,&lines,&points);
             Button_Ifpressed(gui.buttons[1],pos,screen,gui.textboxes[1].text,NULL,NULL);
             Button_Ifpressed(gui.buttons[2],pos,screen,gui.textboxes[2].text,NULL,NULL);
+            Button_Ifpressed(gui.buttons[3],pos,screen,NULL,NULL,NULL);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];
@@ -142,16 +156,20 @@ int main(){
                         gui.textboxes[2].len = gui.textboxes[2].len + 1;
                     }
             }
-        }
-        
+        }     
         AddLines(screen,&lines);
         AddQSplines(screen,&qsplines);
+        break;
+        }
+
+        
+
+
         BeginDrawing();
             DrawScreen(screen);
             //.DrawQSplines(&qsplines);
             //.DrawLines(&lines);
         EndDrawing();
-        printf("%f\n",GetFrameTime());
     }
     CloseWindow();
     return 0;

@@ -13,14 +13,18 @@ slider sliders[3] = {(slider){(Vector2){20,200},0,(Vector2){300,30},(Color){255,
                      (slider){(Vector2){20,310},0,(Vector2){300,30},(Color){0,255,0,255},(Vector2){20,70}},
                      (slider){(Vector2){20,420},0,(Vector2){300,30},(Color){0,0,255,255},(Vector2){20,70}}};
 
-button buttons[3] = {(button){(Vector2){20,20},(Vector2){40,40},&ScreenClearButton,"textures\\clearscreenbutton.png"},
-                     (button){(Vector2){240,500},(Vector2){260,520},&SaveAsPpm6,"textures\\savebutton.png"},
-                     (button){(Vector2){240,540},(Vector2){260,560},&LoadPpm6,"textures\\loadbutton.png"}};
+button buttons[4] = {(button){(Vector2){20,20},(Vector2){20,20},&ScreenClearButton,"textures\\clearscreenbutton.png"},
+                     (button){(Vector2){240,500},(Vector2){20,20},&SaveAsPpm6,"textures\\savebutton.png"},
+                     (button){(Vector2){240,540},(Vector2){20,20},&LoadPpm6,"textures\\loadbutton.png"},
+                     (button){(Vector2){41,20},(Vector2){20,20},&RectTool,"textures\\clearscreenbutton.png"}
+                     };
 Gui gui = {1280,720,
             (Vector2){814,359},
             (Vector2){400,100},(Vector2){1200,650},4,
-            buttons,3,
+            buttons,4,
             sliders,3,
             textboxes,3};
 
 Pen pen = {15,BLACK};
+
+enum State state = normal;

@@ -6,6 +6,7 @@
 #include<stdlib.h>
 #include<string.h>
 
+enum State {normal,rect};
 typedef struct{
     int thickness;
     Color color;
@@ -18,7 +19,7 @@ typedef struct {
 typedef struct
 {
     Vector2 top_left;
-    Vector2 bottom_right;
+    Vector2 dim;
     void (*func)(void* a,void*b,void* c,void* d);
     char* texture_path;
     Texture2D texture;
@@ -102,5 +103,6 @@ void ScreenClearButton(void* a,void* b,void* c,void* d);
 void SaveAsPpm6(void* a,void* b,void* c,void* d);
 void DrawSlider(slider s);
 void LoadPpm6(void* a,void* b,void* c,void* d);
+void RectTool(void* a,void* b,void* c,void* d);
 
 #endif
