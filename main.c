@@ -7,6 +7,7 @@ int main(){
 
     InitWindow(gui.screenwidth,gui.screenheight,"paint");
 
+
     Vector2 pos = {0,0};  
     bool curdown = false;
     int moveslider = 0;
@@ -20,8 +21,7 @@ int main(){
 
     pixel* screen = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
     ClearScreen(screen,&qsplines,&lines,&points);
-    AddGuiBase(screen);
-    
+    CanvasFitDim(screen,600,600);
     
     SetTargetFPS(60);
     while(!WindowShouldClose()){   
@@ -41,8 +41,8 @@ int main(){
 
             //buttons
             Button_Ifpressed(gui.buttons[0],pos,screen,&qsplines,&lines,&points);
-            Button_Ifpressed(gui.buttons[1],pos,screen,"test.ppm",NULL,NULL);
-
+            Button_Ifpressed(gui.buttons[1],pos,screen,gui.textboxes[1].text,NULL,NULL);
+            Button_Ifpressed(gui.buttons[2],pos,screen,gui.textboxes[2].text,NULL,NULL);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];
@@ -120,6 +120,28 @@ int main(){
                     pen.thickness = atoi(gui.textboxes[0].text);
                     uptextbox = 0;
             }
+            if(uptextbox == 2){
+                int key = GetKeyPressed();
+                    if(key == KEY_BACKSPACE && gui.textboxes[1].len != 0 ){
+                        gui.textboxes[1].text[gui.textboxes[1].len-1] = '\0';
+                        gui.textboxes[1].len = gui.textboxes[1].len - 1;
+                    }
+                    if(key>= 32 && key<=126 && gui.textboxes[1].len != 40){
+                        gui.textboxes[1].text[gui.textboxes[1].len] = (char)key;
+                        gui.textboxes[1].len = gui.textboxes[1].len + 1;
+                    }
+            }
+            if(uptextbox == 3){
+                int key = GetKeyPressed();
+                    if(key == KEY_BACKSPACE && gui.textboxes[2].len != 0 ){
+                        gui.textboxes[2].text[gui.textboxes[2].len-1] = '\0';
+                        gui.textboxes[2].len = gui.textboxes[2].len - 1;
+                    }
+                    if(key>= 32 && key<=126 && gui.textboxes[2].len != 40){
+                        gui.textboxes[2].text[gui.textboxes[2].len] = (char)key;
+                        gui.textboxes[2].len = gui.textboxes[2].len + 1;
+                    }
+            }
         }
         
         AddLines(screen,&lines);
@@ -129,7 +151,7 @@ int main(){
             //.DrawQSplines(&qsplines);
             //.DrawLines(&lines);
         EndDrawing();
-
+        printf("%f\n",GetFrameTime());
     }
     CloseWindow();
     return 0;

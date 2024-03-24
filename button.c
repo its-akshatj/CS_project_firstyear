@@ -47,13 +47,35 @@ void SaveAsPpm6(void* a,void* b,void* c,void* d){
     fclose(f1);
 }
 
+void LoadPpm6(void* a,void* b,void* c,void* d){
+    pixel* screen = (pixel*)a;
+    char* filename = (char*)b;
+
+    FILE *f = fopen(filename,"r");
+    char w[4] = {0},h[4] = {0},trash[4];
+    fscanf(f,"%s %s %s %s",trash,w,h,trash);
+    CanvasFitDim(screen,atoi(w),atoi(h));
+    if(fgetc(f) == '\n'){
+        printf("a");
+    }
+    for(int i = gui.CanvasTopLeft.y+1;i < gui.CanvasBottomRight.y;i++){
+        for(int j = gui.CanvasTopLeft.x+1; j < gui.CanvasBottomRight.x;j++){
+            screen[i*gui.screenwidth + j] = (pixel){(Color){fgetc(f),fgetc(f),fgetc(f),255}};
+            //screen[i*gui.screenwidth + j] = (pixel){0,0,0,255};   
+        }
+    }
+    fclose(f);
+}
+
 void DrawSlider(slider s){
     DrawRectangle(s.pos.x + s.slide * s.bar_dim.x - s.rect_dim.x/2,s.pos.y - (s.rect_dim.y - s.bar_dim.y)/2,s.rect_dim.x,s.rect_dim.y,BLACK);
     DrawRectangleGradientH(s.pos.x,s.pos.y,s.bar_dim.x,s.bar_dim.y,BLACK,s.color);
-    // DrawRectangle(s.pos.x+s.slide*s.bar_dim.x-10,s.pos.y-20,20,20,BLACK);
-    // DrawRectangle(s.pos.x+s.slide*s.bar_dim.x-10,s.pos.y+s.bar_dim.y,20,20,BLACK);
 }
 
+void RectTool(void* a,void* b,void* c,void* d){
+
+    
+}
 
 
 

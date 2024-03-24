@@ -73,13 +73,16 @@ void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color c
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
 void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points);
 void DrawScreen(pixel* screen);
-void AddGuiBase(pixel* screen);
+void AddGuiBase(pixel* screen,Color color);
 void DrawQSplines(vector* qsplines);
 void DrawLines(vector* lines);
 void ClearCanvas(pixel* screen,vector* qsplines,vector* lines,vector* points);
+void ClearCanvasPixels(pixel* screen);
 void AddQSplines(pixel* screen,vector* qsplines);
 void AddLines(pixel* screen,vector* lines);
 void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color);
+void CanvasFitDim(pixel* screen,int width,int height);
+void Draw_Textboxes(textbox t);
 
 //vector.c
 vector GiveVector();
@@ -98,5 +101,6 @@ void Button_Ifpressed(button but,Vector2 cur_pos,void* a,void* b,void* c,void* d
 void ScreenClearButton(void* a,void* b,void* c,void* d);
 void SaveAsPpm6(void* a,void* b,void* c,void* d);
 void DrawSlider(slider s);
+void LoadPpm6(void* a,void* b,void* c,void* d);
 
 #endif
