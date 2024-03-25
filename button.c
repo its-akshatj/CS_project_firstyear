@@ -20,7 +20,6 @@ void Button_Ifpressed(button but,Vector2 cur_pos,void* a,void* b,void* c,void* d
 }
 
 void ScreenClearButton(void* a,void* b,void* c,void* d){
-    //printf("b\n");
     pixel* screen = (pixel*)a;
     vector* qsplines = (vector*)b;
     vector* lines = (vector*)c;
@@ -59,7 +58,6 @@ void LoadPpm6(void* a,void* b,void* c,void* d){
     for(int i = gui.CanvasTopLeft.y+1;i < gui.CanvasBottomRight.y;i++){
         for(int j = gui.CanvasTopLeft.x+1; j < gui.CanvasBottomRight.x;j++){
             screen[i*gui.screenwidth + j] = (pixel){(Color){fgetc(f),fgetc(f),fgetc(f),255}};
-            //screen[i*gui.screenwidth + j] = (pixel){0,0,0,255};   
         }
     }
     fclose(f);
@@ -72,7 +70,23 @@ void DrawSlider(slider s){
 
 void RectTool(void* a,void* b,void* c,void* d){
     pixel* screen = (pixel*)a;
+    bool* curdown = (bool*)b;
+    *curdown = false;
     state = rect;
+}
+
+void NewButton(void* a,void* b,void* c,void* d){
+    pixel* screen = (pixel*)a;
+    char* width = (char*)b;
+    char* height = (char*)c;
+    CanvasFitDim(screen,atoi(width),atoi(height));
+}
+
+void EllipseTool(void* a,void* b,void* c,void* d){
+    pixel* screen = (pixel*)a;
+    bool* curdown = (bool*)b;
+    *curdown = false;
+    state = ellipse;
 }
 
 

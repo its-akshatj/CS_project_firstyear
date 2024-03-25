@@ -4,11 +4,10 @@ extern Pen pen;
 extern enum State state;
 int main(){
     
-
     InitWindow(gui.screenwidth,gui.screenheight,"paint");
 
     Vector2 pos1,pos2;
-    int stateflag = 0;
+    int stateflag = 0,isreleased = 0;
 
     Vector2 pos = {0,0};  
     bool curdown = false;
@@ -31,15 +30,50 @@ int main(){
 
         switch (state){
         case rect:
-        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[4].top_left.x,gui.buttons[4].top_left.y,gui.buttons[4].dim.x,gui.buttons[4].dim.y})){
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[3].top_left.x,gui.buttons[3].top_left.y,gui.buttons[3].dim.x,gui.buttons[3].dim.y}) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
             state = normal;
             stateflag = 0;    
         }
-        if(stateflag = 0 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
+        if(stateflag == 1 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            pos2 = pos;
+            stateflag = 2;
+        }
+        if(stateflag == 0 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            pos1 = pos;
+            stateflag = 1;
+        }
+        if(stateflag == 2){
+            MyDrawRectangle(screen,pos1,pos2,pen.color);
+            state = normal;
+            stateflag = 0;
+            isreleased = 0;
+        }
+        break;
+        case ellipse:
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[5].top_left.x,gui.buttons[5].top_left.y,gui.buttons[5].dim.x,gui.buttons[5].dim.y}) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            state = normal;
+            stateflag = 0;    
+        }
+        if(stateflag == 1 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            pos2 = pos;
+            stateflag = 2;
+        }
+        if(stateflag == 0 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            pos1 = pos;
+            stateflag = 1;
+        }
+        if(stateflag == 2){
+            MyDrawEllipse(screen,pos1,pos2,pen.color);
+            state = normal;
+            stateflag = 0;
+            isreleased = 0;
         }
         break;
 
         case normal:
+
         // text boxes
         for(int i = 0;i<gui.num_textboxes;i++){
             textbox t = gui.textboxes[i];
@@ -56,7 +90,9 @@ int main(){
             Button_Ifpressed(gui.buttons[0],pos,screen,&qsplines,&lines,&points);
             Button_Ifpressed(gui.buttons[1],pos,screen,gui.textboxes[1].text,NULL,NULL);
             Button_Ifpressed(gui.buttons[2],pos,screen,gui.textboxes[2].text,NULL,NULL);
-            Button_Ifpressed(gui.buttons[3],pos,screen,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[3],pos,screen,&curdown,NULL,NULL);
+            Button_Ifpressed(gui.buttons[4],pos,screen,gui.textboxes[3].text,gui.textboxes[4].text,NULL);
+            Button_Ifpressed(gui.buttons[5],pos,screen,&curdown,NULL,NULL);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];
@@ -144,6 +180,7 @@ int main(){
                         gui.textboxes[1].text[gui.textboxes[1].len] = (char)key;
                         gui.textboxes[1].len = gui.textboxes[1].len + 1;
                     }
+                    uptextbox = 0;
             }
             if(uptextbox == 3){
                 int key = GetKeyPressed();
@@ -155,6 +192,41 @@ int main(){
                         gui.textboxes[2].text[gui.textboxes[2].len] = (char)key;
                         gui.textboxes[2].len = gui.textboxes[2].len + 1;
                     }
+                    uptextbox = 0;
+            }
+            if(uptextbox == 4){
+                int key = GetKeyPressed();
+                    if(key == KEY_BACKSPACE && gui.textboxes[3].len != 0 ){
+                        gui.textboxes[3].text[gui.textboxes[3].len-1] = '\0';
+                        gui.textboxes[3].len = gui.textboxes[3].len - 1;
+                    }
+                    if(key>= 48 && key<=57 && gui.textboxes[3].len != 3){
+                        gui.textboxes[3].text[gui.textboxes[3].len] = (char)key;
+                        gui.textboxes[3].len = gui.textboxes[3].len + 1;
+                    }
+                    if(atoi(gui.textboxes[3].text)>900){
+                        gui.textboxes[3].text[0] = '9';
+                        gui.textboxes[3].text[1] = '0';
+                        gui.textboxes[3].text[2] = '0';
+                    }
+                    uptextbox = 0;
+            }
+            if(uptextbox == 5){
+                int key = GetKeyPressed();
+                    if(key == KEY_BACKSPACE && gui.textboxes[4].len != 0 ){
+                        gui.textboxes[4].text[gui.textboxes[4].len-1] = '\0';
+                        gui.textboxes[4].len = gui.textboxes[4].len - 1;
+                    }
+                    if(key>= 48 && key<=57 && gui.textboxes[4].len != 3){
+                        gui.textboxes[4].text[gui.textboxes[4].len] = (char)key;
+                        gui.textboxes[4].len = gui.textboxes[4].len + 1;
+                    }
+                    if(atoi(gui.textboxes[4].text)>650){
+                        gui.textboxes[4].text[0] = '6';
+                        gui.textboxes[4].text[1] = '5';
+                        gui.textboxes[4].text[2] = '0';
+                    }
+                    uptextbox = 0;
             }
         }     
         AddLines(screen,&lines);
@@ -167,9 +239,13 @@ int main(){
 
         BeginDrawing();
             DrawScreen(screen);
+   
+
             //.DrawQSplines(&qsplines);
             //.DrawLines(&lines);
         EndDrawing();
+
+
     }
     CloseWindow();
     return 0;

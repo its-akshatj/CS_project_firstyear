@@ -6,7 +6,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-enum State {normal,rect};
+enum State {normal,rect,ellipse};
 typedef struct{
     int thickness;
     Color color;
@@ -84,6 +84,7 @@ void AddLines(pixel* screen,vector* lines);
 void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color);
 void CanvasFitDim(pixel* screen,int width,int height);
 void Draw_Textboxes(textbox t);
+void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 
 //vector.c
 vector GiveVector();
@@ -104,5 +105,7 @@ void SaveAsPpm6(void* a,void* b,void* c,void* d);
 void DrawSlider(slider s);
 void LoadPpm6(void* a,void* b,void* c,void* d);
 void RectTool(void* a,void* b,void* c,void* d);
+void NewButton(void* a,void* b,void* c,void* d);
+void EllipseTool(void* a,void* b,void* c,void* d);
 
 #endif
