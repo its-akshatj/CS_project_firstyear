@@ -6,7 +6,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-enum State {normal,rect,ellipse};
+enum State {normal,rect,ellipse,line};
 typedef struct{
     int thickness;
     Color color;
@@ -107,5 +107,6 @@ void LoadPpm6(void* a,void* b,void* c,void* d);
 void RectTool(void* a,void* b,void* c,void* d);
 void NewButton(void* a,void* b,void* c,void* d);
 void EllipseTool(void* a,void* b,void* c,void* d);
+void LineTool(void* a,void* b,void* c,void* d);
 
 #endif

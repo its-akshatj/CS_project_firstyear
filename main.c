@@ -71,6 +71,28 @@ int main(){
             isreleased = 0;
         }
         break;
+        case line:
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[6].top_left.x,gui.buttons[6].top_left.y,gui.buttons[6].dim.x,gui.buttons[6].dim.y}) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            state = normal;
+            stateflag = 0;    
+        }
+        if(stateflag == 1 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            pos2 = pos;
+            stateflag = 2;
+        }
+        if(stateflag == 0 && pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            pos1 = pos;
+            stateflag = 1;
+        }
+        if(stateflag == 2){
+            Vector_Add50e(&lines,pos1);
+            Vector_Add50e(&lines,pos2);
+            state = normal;
+            stateflag = 0;
+            isreleased = 0;
+        }
+        break;
 
         case normal:
 
@@ -92,7 +114,8 @@ int main(){
             Button_Ifpressed(gui.buttons[2],pos,screen,gui.textboxes[2].text,NULL,NULL);
             Button_Ifpressed(gui.buttons[3],pos,screen,&curdown,NULL,NULL);
             Button_Ifpressed(gui.buttons[4],pos,screen,gui.textboxes[3].text,gui.textboxes[4].text,NULL);
-            Button_Ifpressed(gui.buttons[5],pos,screen,&curdown,NULL,NULL);
+            Button_Ifpressed(gui.buttons[5],pos,&curdown,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[6],pos,&curdown,NULL,NULL,NULL);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];

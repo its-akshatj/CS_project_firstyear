@@ -83,10 +83,15 @@ void NewButton(void* a,void* b,void* c,void* d){
 }
 
 void EllipseTool(void* a,void* b,void* c,void* d){
-    pixel* screen = (pixel*)a;
-    bool* curdown = (bool*)b;
+    bool* curdown = (bool*)a;
     *curdown = false;
     state = ellipse;
+}
+
+void LineTool(void* a,void* b,void* c,void* d){
+    bool* curdown = (bool*)a;
+    *curdown = false;
+    state = line;
 }
 
 
