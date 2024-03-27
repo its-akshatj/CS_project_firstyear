@@ -94,6 +94,12 @@ void LineTool(void* a,void* b,void* c,void* d){
     state = line;
 }
 
+void RatioLock(void* a,void* b,void* c,void* d){
+    bool* ratiolock = (bool*)a;
+    if(*ratiolock == true) *ratiolock = false;
+    else *ratiolock = true;
+}
+
 
 
 

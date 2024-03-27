@@ -108,5 +108,6 @@ void RectTool(void* a,void* b,void* c,void* d);
 void NewButton(void* a,void* b,void* c,void* d);
 void EllipseTool(void* a,void* b,void* c,void* d);
 void LineTool(void* a,void* b,void* c,void* d);
+void RatioLock(void* a,void* b,void* c,void* d);
 
 #endif

@@ -5,21 +5,27 @@ extern enum State state;
 int main(){
     
     InitWindow(gui.screenwidth,gui.screenheight,"paint");
+    //ratio chain
+    bool ratiolock = false;
 
+    //switch case
     Vector2 pos1,pos2;
     int stateflag = 0,isreleased = 0;
 
+    //basics
     Vector2 pos = {0,0};  
     bool curdown = false;
     int moveslider = 0;
     int uptextbox = 0;
 
     Button_LoadTextures();
-
+    
+    //drawing
     vector qsplines = GiveVector();
     vector lines = GiveVector();
     vector points = GiveVector();    
 
+    //screen
     pixel* screen = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
     ClearScreen(screen,&qsplines,&lines,&points);
     CanvasFitDim(screen,600,600);
@@ -116,6 +122,7 @@ int main(){
             Button_Ifpressed(gui.buttons[4],pos,screen,gui.textboxes[3].text,gui.textboxes[4].text,NULL);
             Button_Ifpressed(gui.buttons[5],pos,&curdown,NULL,NULL,NULL);
             Button_Ifpressed(gui.buttons[6],pos,&curdown,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[7],pos,&ratiolock,NULL,NULL,NULL);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];
@@ -191,7 +198,6 @@ int main(){
                         gui.textboxes[0].text[2] = '0';
                     }
                     pen.thickness = atoi(gui.textboxes[0].text);
-                    uptextbox = 0;
             }
             if(uptextbox == 2){
                 int key = GetKeyPressed();
@@ -203,7 +209,6 @@ int main(){
                         gui.textboxes[1].text[gui.textboxes[1].len] = (char)key;
                         gui.textboxes[1].len = gui.textboxes[1].len + 1;
                     }
-                    uptextbox = 0;
             }
             if(uptextbox == 3){
                 int key = GetKeyPressed();
@@ -215,7 +220,6 @@ int main(){
                         gui.textboxes[2].text[gui.textboxes[2].len] = (char)key;
                         gui.textboxes[2].len = gui.textboxes[2].len + 1;
                     }
-                    uptextbox = 0;
             }
             if(uptextbox == 4){
                 int key = GetKeyPressed();
@@ -228,11 +232,17 @@ int main(){
                         gui.textboxes[3].len = gui.textboxes[3].len + 1;
                     }
                     if(atoi(gui.textboxes[3].text)>900){
-                        gui.textboxes[3].text[0] = '9';
-                        gui.textboxes[3].text[1] = '0';
-                        gui.textboxes[3].text[2] = '0';
+                        sprintf(gui.textboxes[3].text,"900");
                     }
-                    uptextbox = 0;
+                    if(ratiolock){
+                        if(atoi(gui.textboxes[3].text)*(9.0/16.0) > 650){
+                            sprintf(gui.textboxes[4].text,"650");
+                        }
+                        else{
+                            sprintf(gui.textboxes[4].text,"%d",(int)(atoi(gui.textboxes[3].text)*(9.0/16.0)));
+                        }
+                        gui.textboxes[4].len = strlen(gui.textboxes[4].text);
+                    }
             }
             if(uptextbox == 5){
                 int key = GetKeyPressed();
@@ -245,12 +255,19 @@ int main(){
                         gui.textboxes[4].len = gui.textboxes[4].len + 1;
                     }
                     if(atoi(gui.textboxes[4].text)>650){
-                        gui.textboxes[4].text[0] = '6';
-                        gui.textboxes[4].text[1] = '5';
-                        gui.textboxes[4].text[2] = '0';
+                        sprintf(gui.textboxes[4].text,"650");
                     }
-                    uptextbox = 0;
+                    if(ratiolock){
+                        if(atoi(gui.textboxes[4].text)*(16.0/9.0) > 900){
+                            sprintf(gui.textboxes[3].text,"900");
+                        }
+                        else{
+                            sprintf(gui.textboxes[3].text,"%d",(int)(atoi(gui.textboxes[4].text)*(16.0/9.0)));
+                        }
+                        gui.textboxes[3].len = strlen(gui.textboxes[3].text);
+                    }
             }
+            uptextbox = 0;
         }     
         AddLines(screen,&lines);
         AddQSplines(screen,&qsplines);
