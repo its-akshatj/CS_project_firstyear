@@ -7,9 +7,27 @@ Vector2 Vector2Sum(Vector2 a,Vector2 b){
     return (Vector2){a.x+b.x,a.y+b.y};
 }
 
+Vector2 Vector2Minus(Vector2 a,Vector2 b){
+    return (Vector2){a.x-b.x,a.y-b.y};
+}
+
+Vector2 Vector2Mult(float a,Vector2 b){
+    return (Vector2){a*b.x,a*b.y};
+}
+
+float Vector2Dot(Vector2 a,Vector2 b){
+    return a.x*b.x + a.y*b.y;
+}
+
 void Button_LoadTextures(){
     for(int i = 0;i<gui.num_buttons;i++){
         gui.buttons[i].texture = LoadTexture(gui.buttons[i].texture_path);
+    }
+}
+
+void Button_UnloadTextures(){
+    for(int i = 0;i<gui.num_buttons;i++){
+        UnloadTexture(gui.buttons[i].texture);
     }
 }
 
@@ -98,6 +116,26 @@ void RatioLock(void* a,void* b,void* c,void* d){
     bool* ratiolock = (bool*)a;
     if(*ratiolock == true) *ratiolock = false;
     else *ratiolock = true;
+}
+
+void Bored(void* a,void* b,void* c,void* d){
+    enum Window* w = (enum Window*)a;
+    bool* curdown = (bool*)b;
+    *curdown = false;
+    *w = super; 
+}
+
+void Eraser(void* a,void* b,void* c,void* d){
+    printf("gg\n");
+    bool* eraser_on = (void*)a;
+    if(*eraser_on == false){
+        *eraser_on = true;
+        pen.color = WHITE;
+    }
+    else{
+        *eraser_on = false;
+        pen.color = (Color){(int)(255 * gui.sliders[0].slide),(int)(255 * gui.sliders[1].slide),(int)(255 * gui.sliders[2].slide),255};
+    }
 }
 
 

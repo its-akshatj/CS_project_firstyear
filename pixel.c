@@ -2,6 +2,7 @@
 extern Gui gui;
 extern Pen pen;
 extern enum State state;
+extern Sym sym;
 
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color){
     if(pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
@@ -9,12 +10,51 @@ void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color){
     }
 }
 
+bool InCanvas(Vector2 pos){
+    if(pos.x-1 < gui.CanvasBottomRight.x && pos.x-1 > gui.CanvasTopLeft.x && pos.y-1 > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y){
+        return true;
+    }
+    return false;
+}
+
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
     for(int i = 0;i<=bottom_right.x-top_left.x;i++){
         for(int j = 0;j<=bottom_right.y-top_left.y;j++){
             screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
         }
     }
+
+}
+
+void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
+    for(int i = 0;i<=bottom_right.x-top_left.x;i++){
+        for(int j = 0;j<=bottom_right.y-top_left.y;j++){
+            //screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
+            MyDrawPixelCanvas(screen,(Vector2){top_left.x+i,top_left.y+j},color);
+            MyDrawPixelCanvas(screen,GetSymPoint((Vector2){top_left.x+i,top_left.y+j}),color);
+        }
+    }
+
 }
 
 void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color){
@@ -49,6 +89,35 @@ void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color col
             MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,-j}),color);
             MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,-j}),color);
             MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,j}),color);
+        }
+    } 
+
+}
+void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
+    Vector2 center = (Vector2){(top_left.x+bottom_right.x)/2.0,(top_left.y+bottom_right.y)/2.0};
+    float a_square = (bottom_right.x-center.x)*(bottom_right.x-center.x);
+    float b_square = (bottom_right.y-center.y)*(bottom_right.y-center.y);
+    for(int i = 0;i<(bottom_right.x-center.x);i++){
+        for(int j  = 0;(i*i)/a_square + (j*j)/b_square < 1;j++){
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,-j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,-j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,j}),color);
+            
+            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){-i,j})),color);
+            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){-i,-j})),color);
+            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){i,-j})),color);
+            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){i,j})),color);
         }
     } 
 
@@ -142,10 +211,16 @@ void DrawLines(vector* lines){
 }
 
 void AddQSplines(pixel* screen,vector* qsplines){
+    Vector2 a = sym.pos1;
+    Vector2 b = Vector2Minus(sym.pos2,sym.pos1);
     for(int i = 0;i<(qsplines->len);i+=3){
         for(int k = 0;k<100;k++){
             Vector2 p = GetSplinePointBezierQuad((qsplines->arr)[i],(qsplines->arr)[i+1],(qsplines->arr)[i+2],(float)k/100.0); //k is getting promoted
-            //Vector2 p = GetSplinePointBezierQuad((Vector2){200,200},(Vector2){200,300},(Vector2){400,400},(float)k/100);
+           if(InCanvas(sym.pos1) && InCanvas(sym.pos2)){
+            MyDrawCircle(screen,
+                        Vector2Minus(Vector2Mult(2,Vector2Sum(a,Vector2Mult(Vector2Dot(Vector2Minus(p,a),b)/Vector2Dot(b,b),b))),p),
+                         pen.thickness,pen.color);
+           }
             MyDrawCircle(screen,p,pen.thickness,pen.color);
         }
     }
@@ -153,13 +228,39 @@ void AddQSplines(pixel* screen,vector* qsplines){
 }
 
 void AddLines(pixel* screen,vector* lines){
+    Vector2 a = sym.pos1;
+    Vector2 b = Vector2Minus(sym.pos2,sym.pos1);
     for(int i = 0;i<lines->len;i+=2){
         for(int k = 0;k<100;k++){
             Vector2 p = GetSplinePointLinear((lines->arr)[i],(lines->arr)[i+1],k/100.0); //k is getting type promoted
+            if(InCanvas(sym.pos1) && InCanvas(sym.pos2)){
+            MyDrawCircle(screen,
+                        Vector2Minus(Vector2Mult(2,Vector2Sum(a,Vector2Mult(Vector2Dot(Vector2Minus(p,a),b)/Vector2Dot(b,b),b))),p),
+                         pen.thickness,pen.color);
+           }
             MyDrawCircle(screen,p,pen.thickness,pen.color);
         }
         Vector_Empty(lines);
     }
+}
+
+void DrawSymLine(){
+    DrawLineEx(sym.pos1,sym.pos2,sym.thick,sym.color);
+    DrawCircleV(sym.pos1,sym.r1,sym.color);
+    DrawCircleV(sym.pos2,sym.r1,sym.color);
+}
+
+bool IsSymOn(){
+    if(InCanvas(sym.pos1) && InCanvas(sym.pos2)){
+        return true;
+    }
+   return false;
+}
+
+Vector2 GetSymPoint(Vector2 p){
+    Vector2 a = sym.pos1;
+    Vector2 b = Vector2Minus(sym.pos2,sym.pos1);
+    return Vector2Minus(Vector2Mult(2,Vector2Sum(a,Vector2Mult(Vector2Dot(Vector2Minus(p,a),b)/Vector2Dot(b,b),b))),p);
 }
 
 

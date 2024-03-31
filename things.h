@@ -5,8 +5,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<math.h>
 
 enum State {normal,rect,ellipse,line};
+enum Window {paint,super};
 typedef struct{
     int thickness;
     Color color;
@@ -66,12 +68,45 @@ typedef struct{
     int cap;
 }vector;
 
+typedef struct{
+    int segments;
+    float radius;
+    float start_angle;
+    float end_angle;
+    vector points;
+}Ring;
+
+typedef struct{
+    Ring* arr;
+    int len;
+    int cap;
+
+}VectorRing;
+
+typedef struct{
+    float angle;
+    float radius;
+    float distance;
+    float speed;
+}Player;
+
+typedef struct{
+    Vector2 pos1;
+    Vector2 pos2;
+    int r1;
+    int r2;
+    int thick;
+    Color color;
+}Sym;
+
 
 
 
 // pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
+bool InCanvas(Vector2 pos); 
 void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points);
 void DrawScreen(pixel* screen);
 void AddGuiBase(pixel* screen,Color color);
@@ -85,6 +120,10 @@ void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color);
 void CanvasFitDim(pixel* screen,int width,int height);
 void Draw_Textboxes(textbox t);
 void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void DrawSymLine();
+bool IsSymOn();
+Vector2 GetSymPoint(Vector2 p);
 
 //vector.c
 vector GiveVector();
@@ -96,9 +135,25 @@ void Vector_Add(vector* vec,Vector2 point,int index);
 Vector2 Vector_pop(vector* vec);
 void Vector_Empty(vector* vec);
 
+VectorRing GiveVectorRing();
+void VectorRing_Grow50(VectorRing* vec,int index);
+void VectorRing_Add50(VectorRing* vec,Ring point,int index);
+void VectorRing_Add50e(VectorRing* vec,Ring point);
+void VectorRing_Grow(VectorRing* vec,int index);
+void VectorRing_Add(VectorRing* vec,Ring point,int index);
+Ring VectorRing_pop(VectorRing* vec);
+void VectorRing_Empty(VectorRing* vec);
+void VectorRing_Insert(VectorRing* vec,Ring ring,int index);
+
+
+
 //buttons.c
 Vector2 Vector2Sum(Vector2 a,Vector2 b);
+Vector2 Vector2Minus(Vector2 a,Vector2 b);
+Vector2 Vector2Mult(float a,Vector2 b);
+float Vector2Dot(Vector2 a,Vector2 b);
 void Button_LoadTextures();
+void Button_UnloadTextures();
 void Button_Ifpressed(button but,Vector2 cur_pos,void* a,void* b,void* c,void* d);
 void ScreenClearButton(void* a,void* b,void* c,void* d);
 void SaveAsPpm6(void* a,void* b,void* c,void* d);
@@ -109,5 +164,13 @@ void NewButton(void* a,void* b,void* c,void* d);
 void EllipseTool(void* a,void* b,void* c,void* d);
 void LineTool(void* a,void* b,void* c,void* d);
 void RatioLock(void* a,void* b,void* c,void* d);
+void Bored(void* a,void* b,void* c,void* d);
+void Eraser(void* a,void* b,void* c,void* d);
 
+//rings.c
+Ring GenerateRing();
+void DrawRings(VectorRing* rings);
+void DrawPlayer(Player p);
+void DrawBackground();
+void ShouldDie(Player p,Ring r,VectorRing* rings,enum Window* w,int* score,VectorRing* dead_rings,float* speed);
 #endif
