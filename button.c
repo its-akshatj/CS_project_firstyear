@@ -3,6 +3,7 @@ extern Gui gui;
 extern Pen pen;
 extern enum State state;
 #define screen(v) screen[(int)(v.y) * gui.screenwidth + (int)(v.x)].color
+#define mask(v) mask[(int)(v.y) * gui.screenwidth + (int)(v.x)].color
 #define ColorComp(d,c) d.r == c.r && d.g == c.g && d.b == c.b && d.a == c.a
 
 Vector2 Vector2Sum(Vector2 a,Vector2 b){
@@ -182,13 +183,10 @@ void Eraser(void* a,void* b,void* c,void* d){
 void FillBucket(pixel* screen,Vector2 t){
     vector ToBeChecked = GiveVector();
     Color target = screen(t);
-
+    if(ColorComp(pen.color,(screen(t)))) return;
     int index = 0;
-
     Vector_Add50e(&ToBeChecked,t);
-
     while (index < ToBeChecked.len){
-        
         Vector2 seed = (ToBeChecked.arr)[index];
         index++;
         if(ColorComp(screen(seed),target)){
@@ -209,7 +207,7 @@ void FillBucket(pixel* screen,Vector2 t){
                 i++;
             }
             rightx+=i;
-            for(int t = leftx;t <= rightx;t++){
+            for(int t = leftx+1;t < rightx;t++){
             if(seed.y + 1 < gui.CanvasBottomRight.y && ColorComp(screen(((Vector2){t,seed.y+1})),target)){
                 Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y+1});
             }
@@ -220,6 +218,51 @@ void FillBucket(pixel* screen,Vector2 t){
         }
     }
     free(ToBeChecked.arr);
+}
+
+void FillMaskBucket(pixel* screen,pixel* mask,Vector2 t){
+    vector ToBeChecked = GiveVector();
+    Color target = mask(t);
+    if(ColorComp(pen.color,(mask(t)))) return;
+    int index = 0;
+    Vector_Add50e(&ToBeChecked,t);
+    while (index < ToBeChecked.len){
+        Vector2 seed = (ToBeChecked.arr)[index];
+        index++;
+        if(ColorComp(mask(seed),target)){
+           
+            screen(seed) = pen.color;
+            mask(seed) = pen.color;
+
+            int leftx = seed.x,rightx = seed.x;
+            int i = 1;
+            while(ColorComp(mask(((Vector2){seed.x-i,seed.y})),target)
+            && seed.x - i > gui.CanvasTopLeft.x && seed.x - i < gui.CanvasBottomRight.x){
+                screen(((Vector2){seed.x-i,seed.y})) = pen.color;
+                mask(((Vector2){seed.x-i,seed.y})) = pen.color;
+                i++;
+            }
+            leftx-=i;
+            i = 1;
+            while(ColorComp(mask(((Vector2){seed.x+i,seed.y})),target)
+            && seed.x + i > gui.CanvasTopLeft.x && seed.x + i < gui.CanvasBottomRight.x){
+                mask(((Vector2){seed.x+i,seed.y})) = pen.color;
+                screen(((Vector2){seed.x+i,seed.y})) = pen.color;
+                i++;
+            }
+            rightx+=i;
+            for(int t = leftx+1;t < rightx;t++){
+            if(seed.y + 1 < gui.CanvasBottomRight.y && ColorComp(mask(((Vector2){t,seed.y+1})),target)){
+                Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y+1});
+            }
+            if(seed.y - 1 > gui.CanvasTopLeft.y && ColorComp(mask(((Vector2){t,seed.y-1})),target)){
+                Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y-1});
+            }
+            }
+        }
+    }
+    free(ToBeChecked.arr);
+    ClearMask(mask);
 }
 
 void FillToolActivation(void* a,void* b,void* c,void* d){

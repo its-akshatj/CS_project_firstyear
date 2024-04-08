@@ -36,6 +36,8 @@ int main(){
 
     //screen
     pixel* screen = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
+    pixel* mask = (pixel*)malloc(gui.screenwidth*gui.screenheight*sizeof(pixel));
+    ClearMask(mask);
     ClearScreen(screen,&qsplines,&lines,&points);
     CanvasFitDim(screen,600,600);
 
@@ -224,7 +226,7 @@ int main(){
         }
         if(stateflag == 2){
             if(IsSymOn()){
-                MyDrawSymRectangle(screen,pos1,pos2,pen.color);
+                MyDrawSymRectangle(screen,mask,pos1,pos2,pen.color);
             }
             else{
                 MyDrawRectangle(screen,pos1,pos2,pen.color);

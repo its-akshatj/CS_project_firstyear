@@ -54,7 +54,7 @@ void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int
     MyDrawRectangle(screen,(Vector2){bottom_right.x - thickness + 1,top_left.y},bottom_right,color);
 }
 
-void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
+void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,Color color){
     if(bottom_right.x < top_left.x){
         float temp = bottom_right.x;
         bottom_right.x = top_left.x;
@@ -65,14 +65,38 @@ void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Colo
         bottom_right.y = top_left.y;
         top_left.y = temp;
     }
+
+    Vector2 a = GetSymPoint(top_left),b=GetSymPoint((Vector2){bottom_right.x,top_left.y}),c = GetSymPoint(bottom_right),d = GetSymPoint((Vector2){top_left.x,bottom_right.y});
+    int x_y  = (((a.x > b.x) ? a.x - b.x : b.x - a.x) > ((a.y > b.y) ? a.y - b.y : b.y - a.y) ) ? ((a.x > b.x) ? a.x - b.x : b.x - a.x) : ((a.y > b.y) ? a.y - b.y : b.y - a.y);
+    for(int i = 0;i<x_y*1.2;i++){
+       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
+       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
+    }
+    x_y  = (((b.x > c.x) ? b.x - c.x : c.x - b.x) > ((b.y > c.y) ? b.y - c.y : c.y - b.y) ) ? ((b.x > c.x) ? b.x - c.x : c.x - b.x) : ((b.y > c.y) ? b.y - c.y : c.y - b.y);
+    for(int i = 0;i<x_y*1.2;i++){
+       MyDrawPixelCanvas(screen,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
+       MyDrawPixelCanvas(mask,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
+    }
+    x_y  = (((c.x > d.x) ? c.x - d.x : d.x - c.x) > ((c.y > d.y) ? c.y - d.y : d.y - c.y) ) ? ((c.x > d.x) ? c.x - d.x : d.x - c.x) : ((c.y > d.y) ? c.y - d.y : d.y - c.y);
+    for(int i = 0;i<x_y*1.2;i++){
+       MyDrawPixelCanvas(screen,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
+       MyDrawPixelCanvas(mask,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
+    }
+    x_y  = (((d.x > a.x) ? d.x - a.x : a.x - d.x) > ((d.y > a.y) ? d.y - a.y : a.y - d.y) ) ? ((d.x > a.x) ? d.x - a.x : a.x - d.x) : ((d.y > a.y) ? d.y - a.y : a.y - d.y);
+    for(int i = 0;i<x_y*1.2;i++){
+       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
+       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
+    }
+    
+    FillMaskBucket(screen,mask,Vector2Mult(0.5,Vector2Sum(a,c)));
+
+    
     for(int i = 0;i<=bottom_right.x-top_left.x;i++){
         for(int j = 0;j<=bottom_right.y-top_left.y;j++){
             //screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
             MyDrawPixelCanvas(screen,(Vector2){top_left.x+i,top_left.y+j},color);
-            MyDrawPixelCanvas(screen,GetSymPoint((Vector2){top_left.x+i,top_left.y+j}),color);
         }
     }
-
 }
 
 void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color){
@@ -314,7 +338,11 @@ Vector2 GetSymPoint(Vector2 p){
     return Vector2Minus(Vector2Mult(2,Vector2Sum(a,Vector2Mult(Vector2Dot(Vector2Minus(p,a),b)/Vector2Dot(b,b),b))),p);
 }
 
-
+void ClearMask(pixel* mask){
+    for(int i = 0;i<gui.screenwidth*gui.screenheight;i++){
+        mask[i] = (pixel){WHITE};
+    }
+}
 
 
 

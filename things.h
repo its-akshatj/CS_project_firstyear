@@ -109,7 +109,7 @@ typedef struct{
 // pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
-void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,Color color);
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
 bool InCanvas(Vector2 pos); 
 void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points);
@@ -130,6 +130,7 @@ void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color 
 void DrawSymLine();
 bool IsSymOn();
 Vector2 GetSymPoint(Vector2 p);
+void ClearMask(pixel* mask);
 
 //vector.c
 vector GiveVector();
@@ -176,6 +177,7 @@ void HollowRectTool(void* a,void* b,void* c,void* d);
 void FillBucket(pixel* screen,Vector2 t);
 void FillToolActivation(void* a,void* b,void* c,void* d);
 void HollowEllipseTool(void* a,void* b,void* c,void* d);
+void FillMaskBucket(pixel* screen,pixel* mask,Vector2 t);
 
 //rings.c
 Ring GenerateRing();
