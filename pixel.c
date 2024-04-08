@@ -36,6 +36,24 @@ void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color c
 
 }
 
+void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
+    MyDrawRectangle(screen,top_left,(Vector2){bottom_right.x,top_left.y+thickness-1},color);
+    MyDrawRectangle(screen,(Vector2){top_left.x,bottom_right.y-thickness+1},bottom_right,color);
+
+    MyDrawRectangle(screen,top_left,(Vector2){top_left.x+thickness-1,bottom_right.y},color);
+    MyDrawRectangle(screen,(Vector2){bottom_right.x - thickness + 1,top_left.y},bottom_right,color);
+}
+
 void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
     if(bottom_right.x < top_left.x){
         float temp = bottom_right.x;
@@ -93,6 +111,35 @@ void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color col
     } 
 
 }
+
+void DrawHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
+    Vector2 center = (Vector2){(top_left.x+bottom_right.x)/2.0,(top_left.y+bottom_right.y)/2.0};
+    float a_square = (bottom_right.x-center.x)*(bottom_right.x-center.x);
+    float b_square = (bottom_right.y-center.y)*(bottom_right.y-center.y);
+
+    for(int i = 0;i<(bottom_right.x-center.x);i++){
+        for(int j  = 0;(i*i)/a_square + (j*j)/b_square < 1;j++){
+            if((i*i)/a_square + (j*j)/b_square > ((bottom_right.x - center.x - thickness)*(bottom_right.x - center.x - thickness))/a_square){
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,-j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,-j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,j}),color);
+            }
+        }
+    } 
+
+}
+
 void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
     if(bottom_right.x < top_left.x){
         float temp = bottom_right.x;
@@ -173,7 +220,11 @@ void DrawScreen(pixel* screen){
 
 
     for(int i = 0;i<gui.num_buttons;i++){
-        DrawTextureV(gui.buttons[i].texture,gui.buttons[i].top_left,WHITE);
+        if(gui.buttons[i].ispressed){
+       
+            DrawTextureV(gui.buttons[i].ptexture,gui.buttons[i].top_left,WHITE);
+        }
+        else DrawTextureV(gui.buttons[i].texture,gui.buttons[i].top_left,WHITE);
     }
 
     for(int i = 0;i<gui.num_sliders;i++){

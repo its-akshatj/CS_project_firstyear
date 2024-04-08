@@ -2,6 +2,8 @@
 extern Gui gui;
 extern Pen pen;
 extern enum State state;
+#define screen(v) screen[(int)(v.y) * gui.screenwidth + (int)(v.x)].color
+#define ColorComp(d,c) d.r == c.r && d.g == c.g && d.b == c.b && d.a == c.a
 
 Vector2 Vector2Sum(Vector2 a,Vector2 b){
     return (Vector2){a.x+b.x,a.y+b.y};
@@ -23,11 +25,22 @@ void Button_LoadTextures(){
     for(int i = 0;i<gui.num_buttons;i++){
         gui.buttons[i].texture = LoadTexture(gui.buttons[i].texture_path);
     }
+    for(int i = 0;i<gui.num_buttons;i++){
+        if(gui.buttons[i].holdable){
+        gui.buttons[i].ptexture = LoadTexture(gui.buttons[i].ptexture_path);
+        }
+    }
+    
 }
 
 void Button_UnloadTextures(){
     for(int i = 0;i<gui.num_buttons;i++){
         UnloadTexture(gui.buttons[i].texture);
+    }
+    for(int i = 0;i<gui.num_buttons;i++){
+        if(gui.buttons[i].holdable){
+        UnloadTexture(gui.buttons[i].ptexture);
+        }
     }
 }
 
@@ -71,7 +84,7 @@ void LoadPpm6(void* a,void* b,void* c,void* d){
     fscanf(f,"%s %s %s %s",trash,w,h,trash);
     CanvasFitDim(screen,atoi(w),atoi(h));
     if(fgetc(f) == '\n'){
-        printf("a");
+    
     }
     for(int i = gui.CanvasTopLeft.y+1;i < gui.CanvasBottomRight.y;i++){
         for(int j = gui.CanvasTopLeft.x+1; j < gui.CanvasBottomRight.x;j++){
@@ -89,6 +102,7 @@ void DrawSlider(slider s){
 void RectTool(void* a,void* b,void* c,void* d){
     pixel* screen = (pixel*)a;
     bool* curdown = (bool*)b;
+    ((button*)d)->ispressed = true;
     *curdown = false;
     state = rect;
 }
@@ -102,20 +116,44 @@ void NewButton(void* a,void* b,void* c,void* d){
 
 void EllipseTool(void* a,void* b,void* c,void* d){
     bool* curdown = (bool*)a;
+    ((button*)d)->ispressed = true;
     *curdown = false;
     state = ellipse;
 }
 
+void HollowEllipseTool(void* a,void* b,void* c,void* d){
+    bool* curdown = (bool*)a;
+    ((button*)d)->ispressed = true;
+    *curdown = false;
+    state = HollowEllipse;
+}
+
+void HollowRectTool(void* a,void* b,void* c,void* d){
+    bool* curdown = (bool*)a;
+    ((button*)d)->ispressed = true;
+    *curdown = false;
+    state = HollowRect;
+}
+
 void LineTool(void* a,void* b,void* c,void* d){
     bool* curdown = (bool*)a;
+    ((button*)d)->ispressed = true;
     *curdown = false;
     state = line;
 }
 
 void RatioLock(void* a,void* b,void* c,void* d){
     bool* ratiolock = (bool*)a;
-    if(*ratiolock == true) *ratiolock = false;
-    else *ratiolock = true;
+    ((button*)d)->ispressed = true;
+    if(*ratiolock == true){
+        *ratiolock = false;
+        ((button*)d)->ispressed = false;
+    }
+    else{
+        *ratiolock = true;
+        ((button*)d)->ispressed = true;
+
+    }
 }
 
 void Bored(void* a,void* b,void* c,void* d){
@@ -126,16 +164,68 @@ void Bored(void* a,void* b,void* c,void* d){
 }
 
 void Eraser(void* a,void* b,void* c,void* d){
-    printf("gg\n");
+  
     bool* eraser_on = (void*)a;
+    
     if(*eraser_on == false){
         *eraser_on = true;
         pen.color = WHITE;
+        ((button*)d)->ispressed = true;
     }
     else{
         *eraser_on = false;
         pen.color = (Color){(int)(255 * gui.sliders[0].slide),(int)(255 * gui.sliders[1].slide),(int)(255 * gui.sliders[2].slide),255};
+        ((button*)d)->ispressed = false;
     }
+}
+
+void FillBucket(pixel* screen,Vector2 t){
+    vector ToBeChecked = GiveVector();
+    Color target = screen(t);
+
+    int index = 0;
+
+    Vector_Add50e(&ToBeChecked,t);
+
+    while (index < ToBeChecked.len){
+        
+        Vector2 seed = (ToBeChecked.arr)[index];
+        index++;
+        if(ColorComp(screen(seed),target)){
+           
+            screen(seed) = pen.color;
+            int leftx = seed.x,rightx = seed.x;
+            int i = 1;
+            while(ColorComp(screen(((Vector2){seed.x-i,seed.y})),target)
+            && seed.x - i > gui.CanvasTopLeft.x && seed.x - i < gui.CanvasBottomRight.x){
+                screen(((Vector2){seed.x-i,seed.y})) = pen.color;
+                i++;
+            }
+            leftx-=i;
+            i = 1;
+            while(ColorComp(screen(((Vector2){seed.x+i,seed.y})),target)
+            && seed.x + i > gui.CanvasTopLeft.x && seed.x + i < gui.CanvasBottomRight.x){
+                screen(((Vector2){seed.x+i,seed.y})) = pen.color;
+                i++;
+            }
+            rightx+=i;
+            for(int t = leftx;t <= rightx;t++){
+            if(seed.y + 1 < gui.CanvasBottomRight.y && ColorComp(screen(((Vector2){t,seed.y+1})),target)){
+                Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y+1});
+            }
+            if(seed.y - 1 > gui.CanvasTopLeft.y && ColorComp(screen(((Vector2){t,seed.y-1})),target)){
+                Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y-1});
+            }
+            }
+        }
+    }
+    free(ToBeChecked.arr);
+}
+
+void FillToolActivation(void* a,void* b,void* c,void* d){
+    bool* curdown = (bool*)a;
+    *curdown = false;
+    state = Bucket;
 }
 
 

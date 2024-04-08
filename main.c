@@ -5,7 +5,6 @@ extern enum State state;
 extern enum Window window;
 extern Sym sym;
 int main(){
-
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(gui.screenwidth,gui.screenheight,"paint");
     //ratio chain
@@ -99,10 +98,10 @@ int main(){
             memset(buf,'\0',15);
             sprintf(buf,"SCORE : %d",score);
             DrawText(buf,30,30,60,BLACK);
-            printf("w\n");
+        
         EndDrawing();
-        printf("f\n");
-        fflush(stdout);
+      
+       
         speed = speed + 0.1;
         
 
@@ -112,11 +111,96 @@ int main(){
         pos = GetMousePosition();
 
         switch (state){
+        case Bucket:
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[12].top_left.x,gui.buttons[12].top_left.y,gui.buttons[12].dim.x,gui.buttons[12].dim.y})){
+                state = paint;
+            }
+            if(InCanvas(pos)){
+           
+                FillBucket(screen,pos);
+                state = paint;
+            }
+        }
+        break;
+        case HollowEllipse:
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[3].top_left.x,gui.buttons[3].top_left.y,gui.buttons[3].dim.x,gui.buttons[3].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            state = normal;
+            stateflag = 0;
+            gui.buttons[12].ispressed = false;
+        }
+        if(stateflag == 1
+        && pos.x-1 < gui.CanvasBottomRight.x
+        && pos.x-1 > gui.CanvasTopLeft.x
+        && pos.y-1 > gui.CanvasTopLeft.y
+        && pos.y < gui.CanvasBottomRight.y
+        && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+        && isreleased){
+            pos2 = pos;
+            stateflag = 2;
+        }
+        if(stateflag == 0
+        && pos.x-1 < gui.CanvasBottomRight.x
+        && pos.x-1 > gui.CanvasTopLeft.x
+        && pos.y-1 > gui.CanvasTopLeft.y
+        && pos.y < gui.CanvasBottomRight.y
+        && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+        && isreleased){
+            pos1 = pos;
+            stateflag = 1;
+        }
+   
+        if(stateflag == 2){
+            gui.buttons[12].ispressed = false;
+            DrawHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            state = normal;
+            stateflag = 0;
+            isreleased = 0;
+        }
+        break;
+
+        case HollowRect:
+        if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[3].top_left.x,gui.buttons[3].top_left.y,gui.buttons[3].dim.x,gui.buttons[3].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+            state = normal;
+            stateflag = 0;
+            gui.buttons[10].ispressed = false;
+        }
+        if(stateflag == 1
+        && pos.x-1 < gui.CanvasBottomRight.x
+        && pos.x-1 > gui.CanvasTopLeft.x
+        && pos.y-1 > gui.CanvasTopLeft.y
+        && pos.y < gui.CanvasBottomRight.y
+        && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+        && isreleased){
+            pos2 = pos;
+            stateflag = 2;
+        }
+        if(stateflag == 0
+        && pos.x-1 < gui.CanvasBottomRight.x
+        && pos.x-1 > gui.CanvasTopLeft.x
+        && pos.y-1 > gui.CanvasTopLeft.y
+        && pos.y < gui.CanvasBottomRight.y
+        && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+        && isreleased){
+            pos1 = pos;
+            stateflag = 1;
+        }
+        if(stateflag == 2){
+            gui.buttons[10].ispressed = false;
+            DrawHollowRectangle(screen,pos1,pos2,pen.thickness,pen.color);
+            state = normal;
+            stateflag = 0;
+            isreleased = 0;
+        }
+        break;
         case rect:
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
         if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[3].top_left.x,gui.buttons[3].top_left.y,gui.buttons[3].dim.x,gui.buttons[3].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
             state = normal;
-            stateflag = 0;    
+            stateflag = 0;  
+            gui.buttons[3].ispressed = false;
         }
         if(stateflag == 1
         && pos.x-1 < gui.CanvasBottomRight.x
@@ -148,13 +232,15 @@ int main(){
             state = normal;
             stateflag = 0;
             isreleased = 0;
+            gui.buttons[3].ispressed = false;
         }
         break;
         case ellipse:
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
         if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[5].top_left.x,gui.buttons[5].top_left.y,gui.buttons[5].dim.x,gui.buttons[5].dim.y}) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
             state = normal;
-            stateflag = 0;    
+            stateflag = 0; 
+            gui.buttons[5].ispressed = false;   
         }
         if(stateflag == 1
         && pos.x-1 < gui.CanvasBottomRight.x
@@ -186,13 +272,16 @@ int main(){
             state = normal;
             stateflag = 0;
             isreleased = 0;
+
+            gui.buttons[5].ispressed = false;
         }
         break;
         case line:
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
         if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[6].top_left.x,gui.buttons[6].top_left.y,gui.buttons[6].dim.x,gui.buttons[6].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
             state = normal;
-            stateflag = 0;    
+            stateflag = 0;
+            gui.buttons[6].ispressed = false;
         }
         if(stateflag == 1
         && pos.x-1 < gui.CanvasBottomRight.x
@@ -224,6 +313,7 @@ int main(){
             state = normal;
             stateflag = 0;
             isreleased = 0;
+            gui.buttons[6].ispressed = false;
         }
         break;
 
@@ -248,13 +338,16 @@ int main(){
             Button_Ifpressed(gui.buttons[0],pos,screen,&qsplines,&lines,&points);
             Button_Ifpressed(gui.buttons[1],pos,screen,gui.textboxes[1].text,NULL,NULL);
             Button_Ifpressed(gui.buttons[2],pos,screen,gui.textboxes[2].text,NULL,NULL);
-            Button_Ifpressed(gui.buttons[3],pos,screen,&curdown,NULL,NULL);
+            Button_Ifpressed(gui.buttons[3],pos,screen,&curdown,NULL,gui.buttons + 3);
             Button_Ifpressed(gui.buttons[4],pos,screen,gui.textboxes[3].text,gui.textboxes[4].text,NULL);
-            Button_Ifpressed(gui.buttons[5],pos,&curdown,NULL,NULL,NULL);
-            Button_Ifpressed(gui.buttons[6],pos,&curdown,NULL,NULL,NULL);
-            Button_Ifpressed(gui.buttons[7],pos,&ratiolock,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[5],pos,&curdown,NULL,NULL,gui.buttons + 5);
+            Button_Ifpressed(gui.buttons[6],pos,&curdown,NULL,NULL,gui.buttons + 6);
+            Button_Ifpressed(gui.buttons[7],pos,&ratiolock,NULL,NULL,gui.buttons + 7);
             Button_Ifpressed(gui.buttons[8],pos,&window,&curdown,NULL,NULL);
-            Button_Ifpressed(gui.buttons[9],pos,&eraser_on,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[9],pos,&eraser_on,NULL,NULL,gui.buttons + 9);
+            Button_Ifpressed(gui.buttons[10],pos,&curdown,NULL,NULL,gui.buttons + 10);
+            Button_Ifpressed(gui.buttons[11],pos,&curdown,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[12],pos,&curdown,NULL,NULL,gui.buttons + 12);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
                 slider s = gui.sliders[i];
@@ -273,14 +366,7 @@ int main(){
                 if(CheckCollisionPointRec(pos,(Rectangle){s.pos.x,s.pos.y - (s.rect_dim.y - s.bar_dim.y)/2,s.bar_dim.x,s.rect_dim.y})){
                     gui.sliders[moveslider-1].slide = (pos.x-s.pos.x)/s.bar_dim.x;
                 }
-                else{
-                    char c[4] = {pen.color.r,pen.color.g,pen.color.b,pen.color.a};
-                    c[moveslider - 1] = (int)(255 * s.slide);
-                    if(eraser_on == false){
-                        pen.color = (Color){c[0],c[1],c[2],c[3]};
-                    }
-                    moveslider = 0;
-                }
+                else moveslider = 0;
             }
 
             if(pos.x < gui.CanvasBottomRight.x && pos.x > gui.CanvasTopLeft.x && pos.y > gui.CanvasTopLeft.y && pos.y < gui.CanvasBottomRight.y && !move_sym_pos1 && !move_sym_pos2){
@@ -298,6 +384,12 @@ int main(){
             }
         }
         if(!curdown){
+
+            if(!eraser_on){
+                pen.color = (Color){(int)(255 * gui.sliders[0].slide),
+                                    (int)(255 * gui.sliders[1].slide),
+                                    (int)(255 * gui.sliders[2].slide),255};
+            }
 
             if(points.len != 0){
                 int i  = 0;

@@ -7,7 +7,7 @@
 #include<string.h>
 #include<math.h>
 
-enum State {normal,rect,ellipse,line};
+enum State {normal,rect,ellipse,line,HollowRect,HollowEllipse,Bucket};
 enum Window {paint,super};
 typedef struct{
     int thickness;
@@ -24,7 +24,11 @@ typedef struct
     Vector2 dim;
     void (*func)(void* a,void*b,void* c,void* d);
     char* texture_path;
+    char* ptexture_path;
+    bool ispressed;
+    bool holdable;
     Texture2D texture;
+    Texture2D ptexture;
 }button;
 
 typedef struct{
@@ -104,6 +108,7 @@ typedef struct{
 
 // pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
 void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
 bool InCanvas(Vector2 pos); 
@@ -120,6 +125,7 @@ void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color);
 void CanvasFitDim(pixel* screen,int width,int height);
 void Draw_Textboxes(textbox t);
 void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void DrawHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
 void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void DrawSymLine();
 bool IsSymOn();
@@ -166,6 +172,10 @@ void LineTool(void* a,void* b,void* c,void* d);
 void RatioLock(void* a,void* b,void* c,void* d);
 void Bored(void* a,void* b,void* c,void* d);
 void Eraser(void* a,void* b,void* c,void* d);
+void HollowRectTool(void* a,void* b,void* c,void* d);
+void FillBucket(pixel* screen,Vector2 t);
+void FillToolActivation(void* a,void* b,void* c,void* d);
+void HollowEllipseTool(void* a,void* b,void* c,void* d);
 
 //rings.c
 Ring GenerateRing();
