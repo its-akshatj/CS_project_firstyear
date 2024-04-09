@@ -1,14 +1,15 @@
 #ifndef THINGS_H
 #define THINGS_H
-
+//---------------------------------------------------HEADERS----------------------------------------//
 #include"raylib.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
-
+//---------------------------------------------------ENUMERATORS--------------------------------------------//
 enum State {normal,rect,ellipse,line,HollowRect,HollowEllipse,Bucket};
 enum Window {paint,super};
+//-----------------------------------------------------STRUCT DEFINITIONS----------------------------------------------------------//
 typedef struct{
     int thickness;
     Color color;
@@ -104,8 +105,8 @@ typedef struct{
 }Sym;
 
 
-
-
+//-------------------------------------------------STRUCT DEFINITIONS END-------------------------------------------------------------//
+//--------------------------------------------------FUNCTIONS-------------------------------------------------------------------------//
 // pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
