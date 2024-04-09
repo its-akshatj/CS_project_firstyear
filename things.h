@@ -13,7 +13,7 @@ enum Window {paint,super};
 typedef struct{
     int thickness;
     Color color;
-}Pen;
+}Pen;//STRUCT FOR PEN
 
 typedef struct {
     Color color;
