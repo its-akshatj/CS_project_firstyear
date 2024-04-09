@@ -7,24 +7,24 @@ extern enum State state;
 #define ColorComp(d,c) d.r == c.r && d.g == c.g && d.b == c.b && d.a == c.a
 
 Vector2 Vector2Sum(Vector2 a,Vector2 b){
-    return (Vector2){a.x+b.x,a.y+b.y};
+    return (Vector2){a.x+b.x,a.y+b.y};//function to add two vectors
 }
 
 Vector2 Vector2Minus(Vector2 a,Vector2 b){
-    return (Vector2){a.x-b.x,a.y-b.y};
+    return (Vector2){a.x-b.x,a.y-b.y};//function to subtract to vectors
 }
 
 Vector2 Vector2Mult(float a,Vector2 b){
-    return (Vector2){a*b.x,a*b.y};
+    return (Vector2){a*b.x,a*b.y};//multiply two vectors
 }
 
 float Vector2Dot(Vector2 a,Vector2 b){
-    return a.x*b.x + a.y*b.y;
+    return a.x*b.x + a.y*b.y;//dot product 
 }
 
 void Button_LoadTextures(){
     for(int i = 0;i<gui.num_buttons;i++){
-        gui.buttons[i].texture = LoadTexture(gui.buttons[i].texture_path);
+        gui.buttons[i].texture = LoadTexture(gui.buttons[i].texture_path);//button graphics
     }
     for(int i = 0;i<gui.num_buttons;i++){
         if(gui.buttons[i].holdable){

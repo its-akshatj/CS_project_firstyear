@@ -1,6 +1,6 @@
 #include"things.h"
 
-char t1[40] = {'1','5'};
+char t1[40] = {'1','5'}; 
 char t2[40];
 char t3[40];
 char t4[40];
@@ -23,6 +23,7 @@ button buttons[13] = {(button){(Vector2){20,20},(Vector2){20,20},&ScreenClearBut
                      (button){(Vector2){41,20},(Vector2){20,20},&RectTool,"textures\\clearscreenbutton.png","textures\\p.png",0,1},
                      (button){(Vector2){177,655},(Vector2){53,20},&NewButton,"textures\\newbutton.png"},
                      (button){(Vector2){41,41},(Vector2){20,20},&EllipseTool,"textures\\ellipsetool.png","textures\\p.png",0,1},
+                     
                      (button){(Vector2){20,41},(Vector2){20,20},&LineTool,"textures\\linetool.png","textures\\p.png",0,1},
                      (button){(Vector2){147,655},(Vector2){20,20},&RatioLock,"textures\\ratiochain.png","textures\\p.png",0,1},
                      (button){(Vector2){60,20},(Vector2){100,20},&Bored,"textures\\bored.png"},
