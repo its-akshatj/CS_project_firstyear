@@ -54,7 +54,7 @@ void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int
     MyDrawRectangle(screen,(Vector2){bottom_right.x - thickness + 1,top_left.y},bottom_right,color);
 }
 
-void DrawSymHollowRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,int thickness,Color color){
+void DrawSymHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color){
     if(bottom_right.x < top_left.x){
         float temp = bottom_right.x;
         bottom_right.x = top_left.x;
@@ -66,54 +66,18 @@ void DrawSymHollowRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 b
         top_left.y = temp;
     }
 
-    Vector2 a = GetSymPoint(top_left),b=GetSymPoint((Vector2){bottom_right.x,top_left.y}),c = GetSymPoint(bottom_right),d = GetSymPoint((Vector2){top_left.x,bottom_right.y});
-    int x_y  = (((a.x > b.x) ? a.x - b.x : b.x - a.x) > ((a.y > b.y) ? a.y - b.y : b.y - a.y) ) ? ((a.x > b.x) ? a.x - b.x : b.x - a.x) : ((a.y > b.y) ? a.y - b.y : b.y - a.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((b.x > c.x) ? b.x - c.x : c.x - b.x) > ((b.y > c.y) ? b.y - c.y : c.y - b.y) ) ? ((b.x > c.x) ? b.x - c.x : c.x - b.x) : ((b.y > c.y) ? b.y - c.y : c.y - b.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((c.x > d.x) ? c.x - d.x : d.x - c.x) > ((c.y > d.y) ? c.y - d.y : d.y - c.y) ) ? ((c.x > d.x) ? c.x - d.x : d.x - c.x) : ((c.y > d.y) ? c.y - d.y : d.y - c.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((d.x > a.x) ? d.x - a.x : a.x - d.x) > ((d.y > a.y) ? d.y - a.y : a.y - d.y) ) ? ((d.x > a.x) ? d.x - a.x : a.x - d.x) : ((d.y > a.y) ? d.y - a.y : a.y - d.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
-    }
+    Vector2 a = GetSymPoint(top_left),
+    b = GetSymPoint((Vector2){bottom_right.x,top_left.y}),
+    c = GetSymPoint(bottom_right),
+    d = GetSymPoint((Vector2){top_left.x,bottom_right.y});
 
-    a = GetSymPoint(Vector2Sum(top_left,(Vector2){pen.thickness,pen.thickness})),
-    b = GetSymPoint(Vector2Sum((Vector2){bottom_right.x,top_left.y},(Vector2){-1*pen.thickness,pen.thickness})),
-    c = GetSymPoint(Vector2Sum(bottom_right,(Vector2){-1*pen.thickness,-1*pen.thickness})),
-    d = GetSymPoint(Vector2Sum((Vector2){top_left.x,bottom_right.y},(Vector2){pen.thickness,-1*pen.thickness}));
-    x_y  = (((a.x > b.x) ? a.x - b.x : b.x - a.x) > ((a.y > b.y) ? a.y - b.y : b.y - a.y) ) ? ((a.x > b.x) ? a.x - b.x : b.x - a.x) : ((a.y > b.y) ? a.y - b.y : b.y - a.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((b.x > c.x) ? b.x - c.x : c.x - b.x) > ((b.y > c.y) ? b.y - c.y : c.y - b.y) ) ? ((b.x > c.x) ? b.x - c.x : c.x - b.x) : ((b.y > c.y) ? b.y - c.y : c.y - b.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((c.x > d.x) ? c.x - d.x : d.x - c.x) > ((c.y > d.y) ? c.y - d.y : d.y - c.y) ) ? ((c.x > d.x) ? c.x - d.x : d.x - c.x) : ((c.y > d.y) ? c.y - d.y : d.y - c.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((d.x > a.x) ? d.x - a.x : a.x - d.x) > ((d.y > a.y) ? d.y - a.y : a.y - d.y) ) ? ((d.x > a.x) ? d.x - a.x : a.x - d.x) : ((d.y > a.y) ? d.y - a.y : a.y - d.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
-    }
+    DrawObliqueRect(screen,a,b,GetSymPoint((Vector2){bottom_right.x,top_left.y+thickness-1}));
+    DrawObliqueRect(screen,GetSymPoint((Vector2){bottom_right.x - thickness + 1,top_left.y}),b,c);
+    DrawObliqueRect(screen,c,d,GetSymPoint((Vector2){top_left.x,bottom_right.y-thickness+1}));
+    DrawObliqueRect(screen,d,a,GetSymPoint((Vector2){top_left.x+thickness-1,top_left.y}));
 
-    FillMaskBucket(screen,mask,Vector2Mult(0.5,Vector2Sum(GetSymPoint(top_left),a)));
+    
+    // FillMaskBucket(screen,mask,Vector2Mult(0.5,Vector2Sum(GetSymPoint(top_left),a)));
 
     MyDrawRectangle(screen,top_left,(Vector2){bottom_right.x,top_left.y+thickness-1},color);
     MyDrawRectangle(screen,(Vector2){top_left.x,bottom_right.y-thickness+1},bottom_right,color);
@@ -121,7 +85,7 @@ void DrawSymHollowRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 b
     MyDrawRectangle(screen,(Vector2){bottom_right.x - thickness + 1,top_left.y},bottom_right,color);
 }
 
-void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,Color color){
+void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
     if(bottom_right.x < top_left.x){
         float temp = bottom_right.x;
         bottom_right.x = top_left.x;
@@ -132,8 +96,20 @@ void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 botto
         bottom_right.y = top_left.y;
         top_left.y = temp;
     }
-    Vector2 a = GetSymPoint(top_left),b=GetSymPoint((Vector2){bottom_right.x,top_left.y}),c = GetSymPoint(bottom_right),d = GetSymPoint((Vector2){top_left.x,bottom_right.y});
+    Vector2 a = GetSymPoint(top_left),
+    b = GetSymPoint((Vector2){bottom_right.x,top_left.y}),
+    c = GetSymPoint(bottom_right);
     
+    DrawObliqueRect(screen,a,b,c);
+
+    for(int i = 0;i<=bottom_right.x-top_left.x;i++){
+        for(int j = 0;j<=bottom_right.y-top_left.y;j++){
+            screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
+        }
+    }
+}
+
+void DrawObliqueRect(pixel* screen,Vector2 a,Vector2 b ,Vector2 c){
     float x_y  = 1.1*(((a.x > b.x) ? a.x - b.x : b.x - a.x) > ((a.y > b.y) ? a.y - b.y : b.y - a.y) ) ? ((a.x > b.x) ? a.x - b.x : b.x - a.x) : ((a.y > b.y) ? a.y - b.y : b.y - a.y);
     float len = 1.1*(((b.x > c.x) ? b.x - c.x : c.x - b.x) > ((b.y > c.y) ? b.y - c.y : c.y - b.y) ) ? ((b.x > c.x) ? b.x - c.x : c.x - b.x) : ((b.y > c.y) ? b.y - c.y : c.y - b.y);
     vector points = GiveVector();
@@ -160,16 +136,10 @@ void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 botto
                 MyDrawPixelCanvas(screen,points.arr[it],pen.color);
             }
         }
-        printf("{%f,%f}\n",next.x - cur.x,next.y - cur.y);
         cur = next;
     }
+    free(points.arr);
 
-
-    for(int i = 0;i<=bottom_right.x-top_left.x;i++){
-        for(int j = 0;j<=bottom_right.y-top_left.y;j++){
-            screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
-        }
-    }
 }
 
 void MyDrawCircle(pixel* screen,Vector2 center,int radius,Color color){

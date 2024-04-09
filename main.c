@@ -192,7 +192,7 @@ int main(){
         if(stateflag == 2){
             gui.buttons[10].ispressed = false;
             if(IsSymOn){
-                DrawSymHollowRectangle(screen,mask,pos1,pos2,pen.thickness,pen.color);
+                DrawSymHollowRectangle(screen,pos1,pos2,pen.thickness,pen.color);
             }
             else{
                 DrawHollowRectangle(screen,pos1,pos2,pen.thickness,pen.color);
@@ -231,7 +231,7 @@ int main(){
         }
         if(stateflag == 2){
             if(IsSymOn()){
-                MyDrawSymRectangle(screen,mask,pos1,pos2,pen.color);
+                MyDrawSymRectangle(screen,pos1,pos2,pen.color);
             }
             else{
                 MyDrawRectangle(screen,pos1,pos2,pen.color);

@@ -109,7 +109,7 @@ typedef struct{
 // pixel.c
 void MyDrawRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void DrawHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
-void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,Color color);
+void MyDrawSymRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void MyDrawPixelCanvas(pixel* screen,Vector2 pos,Color color);
 bool InCanvas(Vector2 pos); 
 void ClearScreen(pixel* screen,vector* qsplines,vector* lines,vector* points);
@@ -131,7 +131,8 @@ void DrawSymLine();
 bool IsSymOn();
 Vector2 GetSymPoint(Vector2 p);
 void ClearMask(pixel* mask);
-void DrawSymHollowRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
+void DrawSymHollowRectangle(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
+void DrawObliqueRect(pixel* screen,Vector2 a,Vector2 b ,Vector2 c);
 
 //vector.c
 vector GiveVector();
