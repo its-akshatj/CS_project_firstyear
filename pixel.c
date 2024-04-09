@@ -134,37 +134,40 @@ void MyDrawSymRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 botto
     }
     Vector2 a = GetSymPoint(top_left),b=GetSymPoint((Vector2){bottom_right.x,top_left.y}),c = GetSymPoint(bottom_right),d = GetSymPoint((Vector2){top_left.x,bottom_right.y});
     
-    int x_y  = (((a.x > b.x) ? a.x - b.x : b.x - a.x) > ((a.y > b.y) ? a.y - b.y : b.y - a.y) ) ? ((a.x > b.x) ? a.x - b.x : b.x - a.x) : ((a.y > b.y) ? a.y - b.y : b.y - a.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,b,i/(x_y*1.2)),pen.color);
+    float x_y  = 1.1*(((a.x > b.x) ? a.x - b.x : b.x - a.x) > ((a.y > b.y) ? a.y - b.y : b.y - a.y) ) ? ((a.x > b.x) ? a.x - b.x : b.x - a.x) : ((a.y > b.y) ? a.y - b.y : b.y - a.y);
+    float len = 1.1*(((b.x > c.x) ? b.x - c.x : c.x - b.x) > ((b.y > c.y) ? b.y - c.y : c.y - b.y) ) ? ((b.x > c.x) ? b.x - c.x : c.x - b.x) : ((b.y > c.y) ? b.y - c.y : c.y - b.y);
+    vector points = GiveVector();
+    for(int j = 0;j < len;j++){
+        Vector_Add50e(&points,GetSplinePointLinear(b,c,j/len));
+    }
+    Vector2 cur = b;
+    for(int i = 1;i<x_y-1;i++){
+        Vector2 next = GetSplinePointLinear(b,a,i/x_y);
+        for(int it = 0;it<points.len;it++){
+            MyDrawPixelCanvas(screen,points.arr[it],pen.color);
+        }
+
+        if(next.x - cur.x != 0){
+            for(int it = 0;it<points.len;it++){
+                points.arr[it] = Vector2Sum(points.arr[it],(Vector2){next.x-cur.x,0});
+                MyDrawPixelCanvas(screen,points.arr[it],pen.color);
+            }
+        }
+
+        if(next.y - cur.y != 0){
+            for(int it = 0;it<points.len;it++){
+                points.arr[it] = Vector2Sum(points.arr[it],(Vector2){0,next.y - cur.y});
+                MyDrawPixelCanvas(screen,points.arr[it],pen.color);
+            }
+        }
+        printf("{%f,%f}\n",next.x - cur.x,next.y - cur.y);
+        cur = next;
     }
 
 
-
-    x_y  = (((b.x > c.x) ? b.x - c.x : c.x - b.x) > ((b.y > c.y) ? b.y - c.y : c.y - b.y) ) ? ((b.x > c.x) ? b.x - c.x : c.x - b.x) : ((b.y > c.y) ? b.y - c.y : c.y - b.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(b,c,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((c.x > d.x) ? c.x - d.x : d.x - c.x) > ((c.y > d.y) ? c.y - d.y : d.y - c.y) ) ? ((c.x > d.x) ? c.x - d.x : d.x - c.x) : ((c.y > d.y) ? c.y - d.y : d.y - c.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(d,c,i/(x_y*1.2)),pen.color);
-    }
-    x_y  = (((d.x > a.x) ? d.x - a.x : a.x - d.x) > ((d.y > a.y) ? d.y - a.y : a.y - d.y) ) ? ((d.x > a.x) ? d.x - a.x : a.x - d.x) : ((d.y > a.y) ? d.y - a.y : a.y - d.y);
-    for(int i = 0;i<x_y*1.2;i++){
-       MyDrawPixelCanvas(screen,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
-       MyDrawPixelCanvas(mask,GetSplinePointLinear(a,d,i/(x_y*1.2)),pen.color);
-    }
-    
-    FillMaskBucket(screen,mask,Vector2Mult(0.5,Vector2Sum(a,c)));
-
-    
     for(int i = 0;i<=bottom_right.x-top_left.x;i++){
         for(int j = 0;j<=bottom_right.y-top_left.y;j++){
-            //screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
-            MyDrawPixelCanvas(screen,(Vector2){top_left.x+i,top_left.y+j},color);
+            screen[(int)(top_left.x + top_left.y*gui.screenwidth + i + j*gui.screenwidth)].color = color;
         }
     }
 }
