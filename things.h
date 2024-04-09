@@ -131,6 +131,7 @@ void DrawSymLine();
 bool IsSymOn();
 Vector2 GetSymPoint(Vector2 p);
 void ClearMask(pixel* mask);
+void DrawSymHollowRectangle(pixel* screen,pixel* mask,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
 
 //vector.c
 vector GiveVector();

@@ -191,7 +191,12 @@ int main(){
         }
         if(stateflag == 2){
             gui.buttons[10].ispressed = false;
-            DrawHollowRectangle(screen,pos1,pos2,pen.thickness,pen.color);
+            if(IsSymOn){
+                DrawSymHollowRectangle(screen,mask,pos1,pos2,pen.thickness,pen.color);
+            }
+            else{
+                DrawHollowRectangle(screen,pos1,pos2,pen.thickness,pen.color);
+            }
             state = normal;
             stateflag = 0;
             isreleased = 0;

@@ -237,7 +237,7 @@ void FillMaskBucket(pixel* screen,pixel* mask,Vector2 t){
             int leftx = seed.x,rightx = seed.x;
             int i = 1;
             while(ColorComp(mask(((Vector2){seed.x-i,seed.y})),target)
-            && seed.x - i > gui.CanvasTopLeft.x && seed.x - i < gui.CanvasBottomRight.x){
+            && seed.x - i > 0 && seed.x - i < 1280){
                 screen(((Vector2){seed.x-i,seed.y})) = pen.color;
                 mask(((Vector2){seed.x-i,seed.y})) = pen.color;
                 i++;
@@ -245,17 +245,17 @@ void FillMaskBucket(pixel* screen,pixel* mask,Vector2 t){
             leftx-=i;
             i = 1;
             while(ColorComp(mask(((Vector2){seed.x+i,seed.y})),target)
-            && seed.x + i > gui.CanvasTopLeft.x && seed.x + i < gui.CanvasBottomRight.x){
+            && seed.x + i > 0 && seed.x + i < 1280){
                 mask(((Vector2){seed.x+i,seed.y})) = pen.color;
                 screen(((Vector2){seed.x+i,seed.y})) = pen.color;
                 i++;
             }
             rightx+=i;
             for(int t = leftx+1;t < rightx;t++){
-            if(seed.y + 1 < gui.CanvasBottomRight.y && ColorComp(mask(((Vector2){t,seed.y+1})),target)){
+            if(seed.y + 1 < 720 && ColorComp(mask(((Vector2){t,seed.y+1})),target)){
                 Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y+1});
             }
-            if(seed.y - 1 > gui.CanvasTopLeft.y && ColorComp(mask(((Vector2){t,seed.y-1})),target)){
+            if(seed.y - 1 > 0 && ColorComp(mask(((Vector2){t,seed.y-1})),target)){
                 Vector_Add50e(&ToBeChecked,(Vector2){t,seed.y-1});
             }
             }
