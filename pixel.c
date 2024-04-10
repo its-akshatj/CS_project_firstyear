@@ -435,10 +435,20 @@ void AddLines(pixel* screen,vector* lines){
     }
 }
 
-void DrawSymLine(){
+void DrawSymLine(Vector2 pos){
     DrawLineEx(sym.pos1,sym.pos2,sym.thick,sym.color);
-    DrawCircleV(sym.pos1,sym.r1,sym.color);
-    DrawCircleV(sym.pos2,sym.r1,sym.color);
+    if(CheckCollisionPointCircle(pos,sym.pos1,sym.r1)){
+        DrawCircleV(sym.pos1,sym.r2,sym.color);
+    }
+    else{
+        DrawCircleV(sym.pos1,sym.r1,sym.color);
+    }
+    if(CheckCollisionPointCircle(pos,sym.pos2,sym.r1)){
+        DrawCircleV(sym.pos2,sym.r2,sym.color);
+    }
+    else{
+        DrawCircleV(sym.pos2,sym.r1,sym.color);
+    }
 }
 
 bool IsSymOn(){

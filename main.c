@@ -524,7 +524,7 @@ int main(){
         }
         BeginDrawing();
             DrawScreen(screen);
-            DrawSymLine();
+            DrawSymLine(pos);
             //.DrawQSplines(&qsplines);
             //.DrawLines(&lines);
         EndDrawing();

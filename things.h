@@ -128,7 +128,7 @@ void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color col
 void DrawHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
 void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void DrawSymHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
-void DrawSymLine();
+void DrawSymLine(Vector2 pos);
 bool IsSymOn();
 Vector2 GetSymPoint(Vector2 p);
 void ClearMask(pixel* mask);
