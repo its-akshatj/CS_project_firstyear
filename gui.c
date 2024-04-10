@@ -28,7 +28,7 @@ button buttons[13] = {(button){(Vector2){20,20},(Vector2){20,20},&ScreenClearBut
                      (button){(Vector2){60,20},(Vector2){100,20},&Bored,"textures\\bored.png"},
                      (button){(Vector2){20,61},(Vector2){20,20},&Eraser,"textures\\eraser.png","textures\\p.png",0,1},
                      (button){(Vector2){41,61},(Vector2){20,20},&HollowRectTool,"textures\\hollowrect.png","textures\\p.png",0,1},
-                     (button){(Vector2){20,81},(Vector2){20,20},&FillToolActivation,"textures\\bucket.png"},
+                     (button){(Vector2){20,81},(Vector2){20,20},&FillToolActivation,"textures\\bucket.png","textures\\p.png",0,1},
                      (button){(Vector2){41,81},(Vector2){20,20},&HollowEllipseTool,"textures\\ellipsetool.png","textures\\p.png",0,1}
                      };
 Gui gui = {1280,720,

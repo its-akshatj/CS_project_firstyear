@@ -269,6 +269,7 @@ void FillToolActivation(void* a,void* b,void* c,void* d){
     bool* curdown = (bool*)a;
     *curdown = false;
     state = Bucket;
+    ((button*)d)->ispressed = true;
 }
 
 
