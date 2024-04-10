@@ -127,6 +127,7 @@ void Draw_Textboxes(textbox t);
 void MyDrawEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
 void DrawHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
 void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color);
+void DrawSymHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color);
 void DrawSymLine();
 bool IsSymOn();
 Vector2 GetSymPoint(Vector2 p);
@@ -180,6 +181,8 @@ void FillBucket(pixel* screen,Vector2 t);
 void FillToolActivation(void* a,void* b,void* c,void* d);
 void HollowEllipseTool(void* a,void* b,void* c,void* d);
 void FillMaskBucket(pixel* screen,pixel* mask,Vector2 t);
+float Vector2Len(Vector2 a);
+float Vector2Lensq(Vector2 a);
 
 //rings.c
 Ring GenerateRing();

@@ -155,7 +155,12 @@ int main(){
    
         if(stateflag == 2){
             gui.buttons[12].ispressed = false;
-            DrawHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            if(IsSymOn()){
+                DrawSymHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            }
+            else{
+                DrawHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            }
             state = normal;
             stateflag = 0;
             isreleased = 0;
