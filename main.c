@@ -111,23 +111,23 @@ int main(){
         case paint:
      
         pos = GetMousePosition();
-
         switch (state){
         case Bucket:
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[12].top_left.x,gui.buttons[12].top_left.y,gui.buttons[12].dim.x,gui.buttons[12].dim.y})){
-                state = paint;
+            if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[11].top_left.x,gui.buttons[11].top_left.y,gui.buttons[11].dim.x,gui.buttons[11].dim.y})){
+                state = normal;
+                gui.buttons[11].ispressed = false;
             }
             if(InCanvas(pos)){
-           
+                gui.buttons[11].ispressed = false;
                 FillBucket(screen,pos);
-                state = paint;
+                state = normal;
             }
         }
         break;
         case HollowEllipse:
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
-        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[3].top_left.x,gui.buttons[3].top_left.y,gui.buttons[3].dim.x,gui.buttons[3].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[12].top_left.x,gui.buttons[12].top_left.y,gui.buttons[12].dim.x,gui.buttons[12].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
             state = normal;
             stateflag = 0;
             gui.buttons[12].ispressed = false;
@@ -155,7 +155,12 @@ int main(){
    
         if(stateflag == 2){
             gui.buttons[12].ispressed = false;
-            DrawHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            if(IsSymOn()){
+                DrawSymHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            }
+            else{
+                DrawHollowEllipse(screen,pos1,pos2,pen.thickness,pen.color);
+            }
             state = normal;
             stateflag = 0;
             isreleased = 0;
@@ -164,7 +169,7 @@ int main(){
 
         case HollowRect:
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){isreleased = 1;}
-        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[3].top_left.x,gui.buttons[3].top_left.y,gui.buttons[3].dim.x,gui.buttons[3].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
+        if(CheckCollisionPointRec(pos,(Rectangle){gui.buttons[10].top_left.x,gui.buttons[10].top_left.y,gui.buttons[10].dim.x,gui.buttons[10].dim.y})&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isreleased){
             state = normal;
             stateflag = 0;
             gui.buttons[10].ispressed = false;
@@ -353,7 +358,7 @@ int main(){
             Button_Ifpressed(gui.buttons[8],pos,&window,&curdown,NULL,NULL);
             Button_Ifpressed(gui.buttons[9],pos,&eraser_on,NULL,NULL,gui.buttons + 9);
             Button_Ifpressed(gui.buttons[10],pos,&curdown,NULL,NULL,gui.buttons + 10);
-            Button_Ifpressed(gui.buttons[11],pos,&curdown,NULL,NULL,NULL);
+            Button_Ifpressed(gui.buttons[11],pos,&curdown,NULL,NULL,gui.buttons + 11);
             Button_Ifpressed(gui.buttons[12],pos,&curdown,NULL,NULL,gui.buttons + 12);
             //sliders
             for(int i = 0;i<gui.num_sliders;i++){
@@ -519,7 +524,7 @@ int main(){
         }
         BeginDrawing();
             DrawScreen(screen);
-            DrawSymLine();
+            DrawSymLine(pos);
             //.DrawQSplines(&qsplines);
             //.DrawLines(&lines);
         EndDrawing();

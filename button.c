@@ -6,6 +6,16 @@ extern enum State state;
 #define mask(v) mask[(int)(v.y) * gui.screenwidth + (int)(v.x)].color
 #define ColorComp(d,c) d.r == c.r && d.g == c.g && d.b == c.b && d.a == c.a
 
+float Vector2Len(Vector2 a){
+    return sqrtf(a.x*a.x + a.y*a.y);
+}
+
+float Vector2Lensq(Vector2 a){
+    return (a.x*a.x + a.y*a.y);
+}
+
+
+
 Vector2 Vector2Sum(Vector2 a,Vector2 b){
     return (Vector2){a.x+b.x,a.y+b.y};//function to add two vectors
 }
@@ -269,6 +279,7 @@ void FillToolActivation(void* a,void* b,void* c,void* d){
     bool* curdown = (bool*)a;
     *curdown = false;
     state = Bucket;
+    ((button*)d)->ispressed = true;
 }
 
 

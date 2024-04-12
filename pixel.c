@@ -207,6 +207,57 @@ void DrawHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int t
 
 }
 
+void DrawSymHollowEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,int thickness,Color color){
+    if(bottom_right.x < top_left.x){
+        float temp = bottom_right.x;
+        bottom_right.x = top_left.x;
+        top_left.x = temp;
+    }
+    if(bottom_right.y < top_left.y){
+        float temp = bottom_right.y;
+        bottom_right.y = top_left.y;
+        top_left.y = temp;
+    }
+    Vector2 center = (Vector2){(top_left.x+bottom_right.x)/2.0,(top_left.y+bottom_right.y)/2.0};
+    float a_square = (bottom_right.x-center.x)*(bottom_right.x-center.x);
+    float b_square = (bottom_right.y-center.y)*(bottom_right.y-center.y);
+
+    for(int i = 0;i<(bottom_right.x-center.x);i++){
+        for(int j  = 0;(i*i)/a_square + (j*j)/b_square < 1;j++){
+            if((i*i)/a_square + (j*j)/b_square > ((bottom_right.x - center.x - thickness)*(bottom_right.x - center.x - thickness))/a_square){
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){-i,-j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,-j}),color);
+            MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,j}),color);
+            }
+        }
+    } 
+
+    Vector2 a = GetSymPoint(top_left),
+    b = GetSymPoint((Vector2){bottom_right.x,top_left.y}),
+    c = GetSymPoint(bottom_right),
+    d = GetSymPoint((Vector2){top_left.x,bottom_right.y}); 
+    Vector2 sym_center = GetSymPoint(center);
+
+    for(int x  = ((((a.x > b.x) ? b.x : a.x) > ((c.x > d.x) ? d.x : c.x)) ? ((c.x > d.x) ? d.x : c.x) : ((a.x > b.x) ? b.x : a.x)  );
+    x < ((((a.x < b.x) ? b.x : a.x) < ((c.x < d.x) ? d.x : c.x)) ? ((c.x < d.x) ? d.x : c.x) : ((a.x < b.x) ? b.x : a.x));x++){
+        for(int y  = ((((a.y > b.y) ? b.y : a.y) > ((c.y > d.y) ? d.y : c.y)) ? ((c.y > d.y) ? d.y : c.y) : ((a.y > b.y) ? b.y : a.y)  );
+        y < ((((a.y < b.y) ? b.y : a.y) < ((c.y < d.y) ? d.y : c.y)) ? ((c.y < d.y) ? d.y : c.y) : ((a.y < b.y) ? b.y : a.y));y++){
+            float cos_theta = Vector2Dot(Vector2Minus((Vector2){x,y},sym_center),Vector2Minus(a,b))/(Vector2Len(Vector2Minus((Vector2){x,y},sym_center)) * Vector2Len(Vector2Minus(a,b))) ;
+            float i = Vector2Len(Vector2Minus((Vector2){x,y},sym_center))*(cos_theta);   
+            float j = Vector2Len(Vector2Minus((Vector2){x,y},sym_center))*sqrt((1-(cos_theta*cos_theta)));
+            if((i*i)/a_square + (j*j)/b_square < 1 && (i*i)/a_square + (j*j)/b_square > ((bottom_right.x - center.x - thickness)*(bottom_right.x - center.x - thickness))/a_square ){
+
+                MyDrawPixelCanvas(screen,(Vector2){x,y},color);
+            }
+        }
+    }
+
+
+
+
+}
+
 void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color color){
     if(bottom_right.x < top_left.x){
         float temp = bottom_right.x;
@@ -228,12 +279,34 @@ void MyDrawSymEllipse(pixel* screen,Vector2 top_left,Vector2 bottom_right,Color 
             MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,-j}),color);
             MyDrawPixelCanvas(screen,Vector2Sum(center,(Vector2){i,j}),color);
             
-            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){-i,j})),color);
-            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){-i,-j})),color);
-            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){i,-j})),color);
-            MyDrawPixelCanvas(screen,GetSymPoint(Vector2Sum(center,(Vector2){i,j})),color);
         }
-    } 
+    }
+
+    Vector2 a = GetSymPoint(top_left),
+    b = GetSymPoint((Vector2){bottom_right.x,top_left.y}),
+    c = GetSymPoint(bottom_right),
+    d = GetSymPoint((Vector2){top_left.x,bottom_right.y}); 
+    Vector2 sym_center = GetSymPoint(center);
+
+    // MyDrawCircle(screen,a,4,BLACK);
+    // MyDrawCircle(screen,b,4,BLACK);
+    // MyDrawCircle(screen,c,4,BLACK);
+    // MyDrawCircle(screen,d,4,BLACK);
+    // MyDrawCircle(screen,(Vector2){((((a.x > b.x) ? b.x : a.x) > ((c.x > d.x) ? d.x : c.x)) ? ((c.x > d.x) ? d.x : c.x) : ((a.x > b.x) ? b.x : a.x)  ),((((a.y > b.y) ? b.y : a.y) > ((c.y > d.y) ? d.y : c.y)) ? ((c.y > d.y) ? d.y : c.y) : ((a.y > b.y) ? b.y : a.y)  )},4,BLUE);
+    // MyDrawCircle(screen,(Vector2){((((a.x < b.x) ? b.x : a.x) < ((c.x < d.x) ? d.x : c.x)) ? ((c.x < d.x) ? d.x : c.x) : ((a.x < b.x) ? b.x : a.x)),((((a.y < b.y) ? b.y : a.y) < ((c.y < d.y) ? d.y : c.y)) ? ((c.y < d.y) ? d.y : c.y) : ((a.y < b.y) ? b.y : a.y))},4,RED);
+    for(int x  = ((((a.x > b.x) ? b.x : a.x) > ((c.x > d.x) ? d.x : c.x)) ? ((c.x > d.x) ? d.x : c.x) : ((a.x > b.x) ? b.x : a.x)  );
+    x < ((((a.x < b.x) ? b.x : a.x) < ((c.x < d.x) ? d.x : c.x)) ? ((c.x < d.x) ? d.x : c.x) : ((a.x < b.x) ? b.x : a.x));x++){
+        for(int y  = ((((a.y > b.y) ? b.y : a.y) > ((c.y > d.y) ? d.y : c.y)) ? ((c.y > d.y) ? d.y : c.y) : ((a.y > b.y) ? b.y : a.y)  );
+        y < ((((a.y < b.y) ? b.y : a.y) < ((c.y < d.y) ? d.y : c.y)) ? ((c.y < d.y) ? d.y : c.y) : ((a.y < b.y) ? b.y : a.y));y++){
+            float cos_theta = Vector2Dot(Vector2Minus((Vector2){x,y},sym_center),Vector2Minus(a,b))/(Vector2Len(Vector2Minus((Vector2){x,y},sym_center)) * Vector2Len(Vector2Minus(a,b))) ;
+            float i = Vector2Len(Vector2Minus((Vector2){x,y},sym_center))*(cos_theta);   
+            float j = Vector2Len(Vector2Minus((Vector2){x,y},sym_center))*sqrt((1-(cos_theta*cos_theta)));
+            if((i*i)/a_square + (j*j)/b_square < 1){
+                MyDrawPixelCanvas(screen,(Vector2){x,y},color);
+            }
+        }
+    }
+    //MyDrawCircle(screen,sym_center,10,BLACK);
 
 }
 
@@ -362,10 +435,20 @@ void AddLines(pixel* screen,vector* lines){
     }
 }
 
-void DrawSymLine(){
+void DrawSymLine(Vector2 pos){
     DrawLineEx(sym.pos1,sym.pos2,sym.thick,sym.color);
-    DrawCircleV(sym.pos1,sym.r1,sym.color);
-    DrawCircleV(sym.pos2,sym.r1,sym.color);
+    if(CheckCollisionPointCircle(pos,sym.pos1,sym.r1)){
+        DrawCircleV(sym.pos1,sym.r2,sym.color);
+    }
+    else{
+        DrawCircleV(sym.pos1,sym.r1,sym.color);
+    }
+    if(CheckCollisionPointCircle(pos,sym.pos2,sym.r1)){
+        DrawCircleV(sym.pos2,sym.r2,sym.color);
+    }
+    else{
+        DrawCircleV(sym.pos2,sym.r1,sym.color);
+    }
 }
 
 bool IsSymOn(){
